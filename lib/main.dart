@@ -1,7 +1,8 @@
+import 'package:assistente_vacinacao/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp( MyApp() );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AssistenteVacinacao',
       debugShowCheckedModeBanner: false,
-      home: Center()
+      home: LoginPage()
     );
   }
 }
