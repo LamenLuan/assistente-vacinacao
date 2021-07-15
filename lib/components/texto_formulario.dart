@@ -16,6 +16,7 @@ class _TextoFormularioState extends State<TextoFormulario> {
       widget.texto,
       style: TextStyle(
         fontSize: 22,
+        color: Colors.black87
       ),
       textAlign: TextAlign.center,
     );
