@@ -3,6 +3,7 @@ import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/pages/cadastro_page.dart';
 import 'package:assistente_vacinacao/pages/principal_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -12,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _form = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +23,25 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true
       ),
       body: Form(
+        key: _form,
         child: Padding(
           padding: const EdgeInsets.all(48),
           child: Column(
             children: [
               CampoEntrada(
                 titulo: 'CPF',
+                enableSuggestions: false,
+                autocorrect: false,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
               ),
               CampoEntrada(
                 titulo: 'Senha',
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
               ),
               Botao(
                 titulo: 'Entrar',
