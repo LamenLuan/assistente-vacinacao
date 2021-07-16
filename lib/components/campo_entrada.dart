@@ -10,6 +10,7 @@ class CampoEntrada extends StatefulWidget {
   final double? width;
   final String? Function(String?)? validator;
   final int? maxLength;
+  final TextEditingController? controller;
 
   CampoEntrada(
     {
@@ -25,6 +26,7 @@ class CampoEntrada extends StatefulWidget {
       this.width,
       this.validator,
       this.maxLength,
+      this.controller
     }
   ) : super(key: key);
 
@@ -33,8 +35,6 @@ class CampoEntrada extends StatefulWidget {
 }
 
 class _CampoEntradaState extends State<CampoEntrada> {
-  final _valor = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,7 +43,7 @@ class _CampoEntradaState extends State<CampoEntrada> {
         obscureText: widget.obscureText,
         enableSuggestions: widget.enableSuggestions,
         autocorrect: widget.autocorrect,
-        controller: _valor,
+        controller: widget.controller,
         style: TextStyle(
           fontSize: 22
         ),

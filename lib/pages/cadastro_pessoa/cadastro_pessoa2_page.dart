@@ -26,7 +26,8 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
       context: context,
       initialDate: new DateTime.now(),
       firstDate: new DateTime(1900),
-      lastDate: new DateTime.now()
+      lastDate: new DateTime.now(),
+      locale: const Locale('pt', 'BR')
     );
 
     if(selecionada != null) setState(
@@ -61,7 +62,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
   @override
   Widget build(BuildContext context) {
     return PaginaFormulario(
-      key: _formKey,
+      formKey: _formKey,
       titulo: 'Parte 2 de 4',
       children: [
         TextoFormulario(
@@ -76,11 +77,13 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Data de nascimento',
+            suffixIcon: Icon(Icons.calendar_today)
           ),
           onTap: selecionaData,
           validator: (value) {
             if(value!.isEmpty) return 'Informe a data de nascimento';
           },
+          
         ),
         Row(
           children: [
@@ -110,7 +113,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
           children: [
             TextoFormulario(
               texto: 'Comorbidade?',
-              marginTop: 12,
+              marginTop: 24,
             )
           ]
         ),
