@@ -49,7 +49,8 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => CadastroPessoa1Page()
             ));
-          }
+          },
+          marginTop: 148,
         )
       ]
     );

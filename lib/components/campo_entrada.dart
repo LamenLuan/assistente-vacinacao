@@ -6,6 +6,8 @@ class CampoEntrada extends StatefulWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final bool obscureText, enableSuggestions, autocorrect;
+  final double marginTop, marginRight;
+  final double? width;
 
   CampoEntrada(
     {
@@ -15,7 +17,10 @@ class CampoEntrada extends StatefulWidget {
       this.inputFormatters,
       this.obscureText = false,
       this.enableSuggestions = true,
-      this.autocorrect = true
+      this.autocorrect = true,
+      this.marginTop = 24,
+      this.marginRight = 0,
+      this.width
     }
   ) : super(key: key);
 
@@ -29,7 +34,7 @@ class _CampoEntradaState extends State<CampoEntrada> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 24),
+      margin: EdgeInsets.only(top: widget.marginTop, right: widget.marginRight),
       child: TextFormField(
         obscureText: widget.obscureText,
         enableSuggestions: widget.enableSuggestions,
@@ -45,6 +50,7 @@ class _CampoEntradaState extends State<CampoEntrada> {
         keyboardType: widget.keyboardType,
         inputFormatters: widget.inputFormatters,
       ),
+      width: widget.width,
     );
   }
 }

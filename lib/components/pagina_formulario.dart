@@ -26,14 +26,12 @@ class _PaginaFormularioState extends State<PaginaFormulario> {
         title: Text(widget.titulo),
         centerTitle: true
       ),
-      body: Center(
-        child: Form(
-          key: _form,
-          child: Padding(
-            padding: const EdgeInsets.all(48),
-            child: Column( children: widget.children ),
-          )
-        ),
+      body: Form(
+        key: _form,
+        child: Padding(
+          padding: const EdgeInsets.all(42),
+          child: Column( children: widget.children ),
+        )
       ),
       resizeToAvoidBottomInset: false
     );

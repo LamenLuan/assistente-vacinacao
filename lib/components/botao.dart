@@ -3,8 +3,16 @@ import 'package:flutter/material.dart';
 class Botao extends StatefulWidget {
   final String titulo;
   final Function onPressed;
+  final double marginTop;
 
-  Botao({Key? key, required this.titulo, required this.onPressed}) : super(key: key);
+  Botao(
+    {
+      Key? key,
+      required this.titulo,
+      required this.onPressed,
+      this.marginTop = 24
+    }
+  ) : super(key: key);
 
   @override
   _BotaoState createState() => _BotaoState();
@@ -15,7 +23,7 @@ class _BotaoState extends State<Botao> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.bottomCenter,
-      margin: EdgeInsets.only(top: 24),
+      margin: EdgeInsets.only(top: widget.marginTop),
       child: ElevatedButton(
         onPressed: () => widget.onPressed(),
         child: Row(

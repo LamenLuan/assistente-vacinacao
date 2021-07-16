@@ -5,6 +5,8 @@ import 'package:assistente_vacinacao/components/texto_formulario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'cadastro_pessoa2_page.dart';
+
 class CadastroPessoa1Page extends StatefulWidget {
   CadastroPessoa1Page({Key? key}) : super(key: key);
 
@@ -34,7 +36,9 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
         Botao(
           titulo: 'Avançar',
           onPressed: () {
-            print('Jooj');
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => CadastroPessoa2Page()
+            ));
           }
         )
       ],
