@@ -1,9 +1,10 @@
 import 'package:assistente_vacinacao/components/botao.dart';
-import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto_formulario.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
+import 'cadastro_pessoa3_page.dart';
 
 class CadastroPessoa2Page extends StatefulWidget {
   CadastroPessoa2Page({Key? key}) : super(key: key);
@@ -13,40 +14,26 @@ class CadastroPessoa2Page extends StatefulWidget {
 }
 
 class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
-  final meses = [
-    'Janeiro',
-    'Fevereiro',
-    'Março',
-    'Abril',
-    'Maio',
-    'Junho',
-    'Julho',
-    'Agosto',
-    'Setembro',
-    'Outubro',
-    'Novembro',
-    'Dezembro'
-  ];
-  String mesEscolhido = '1';
   bool isMasculino = true, isComorbidade = false;
+  final _formKey = GlobalKey<FormState>();
+  final _dataController = TextEditingController();
 
-  List<DropdownMenuItem<String>> carregaMeses()
-  {
-    List<DropdownMenuItem<String>> mesesDropdown = [];
-    for(var i = 0; i < meses.length; i++) {
-      mesesDropdown.add(
-        DropdownMenuItem(child: Text(meses[i], style: TextStyle(fontSize: 22),), value: '${i + 1}')
-      );
-    }
+  Future selecionaData() async {
+    FocusScope.of(context).requestFocus( new FocusNode() );
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
-    return mesesDropdown;
-  }
+    DateTime? selecionada = await showDatePicker(
+      context: context,
+      initialDate: new DateTime.now(),
+      firstDate: new DateTime(1900),
+      lastDate: new DateTime.now()
+    );
 
-  void onMesesChanged(String? valor)
-  {
-    setState(() {
-      mesEscolhido = valor!;
-    });
+    if(selecionada != null) setState(
+      () => _dataController.value = TextEditingValue(
+        text: formatter.format(selecionada)
+      )
+    );
   }
 
   void onGeneroChanged(bool? valor)
@@ -63,65 +50,43 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
     });
   }
 
+  void prosseguir() {
+    if( _formKey.currentState!.validate() ) {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => CadastroPessoa3Page()
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PaginaFormulario(
+      key: _formKey,
       titulo: 'Parte 2 de 4',
       children: [
         TextoFormulario(
           texto:'Insira sua data de nascimento e seus dados físicos',
           marginBottom: 24,
         ),
-        Row( children: [TextoFormulario(texto: 'Data de nascimento:')] ),
-        Row(
-          children: [
-            CampoEntrada(
-              titulo: 'Dia',
-              marginTop: 6,
-              marginRight: 6,
-              width: 75,
-              enableSuggestions: false,
-              autocorrect: false,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ]
-            ),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(right: 6, top: 6),
-                alignment: Alignment.center,
-                child: DropdownButton<String>(
-                  value: mesEscolhido,
-                  items: carregaMeses(),
-                  onChanged: onMesesChanged,
-                  underline: SizedBox(),
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.grey),
-                ),
-                height: 66,
-              ),
-            ),
-            CampoEntrada(
-              titulo: 'Ano',
-              marginTop: 6,
-              width: 100,
-              enableSuggestions: false,
-              autocorrect: false,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ]
-            )
-          ],
+        TextFormField(
+          controller: _dataController,
+          style: TextStyle(
+            fontSize: 22
+          ),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'Data de nascimento',
+          ),
+          onTap: selecionaData,
+          validator: (value) {
+            if(value!.isEmpty) return 'Informe a data de nascimento';
+          },
         ),
         Row(
           children: [
             TextoFormulario(
               texto: 'Gênero:',
-              marginTop: 12,
+              marginTop: 24,
             )
           ]
         ),
@@ -167,11 +132,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
         ),
         Botao(
           titulo: 'Avançar',
-          onPressed: () {
-            // Navigator.push(context, MaterialPageRoute(
-            //   builder: (_) => CadastroPessoa2Page()
-            // ));
-          }
+          onPressed: prosseguir
         )
       ],
     );

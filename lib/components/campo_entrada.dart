@@ -8,6 +8,8 @@ class CampoEntrada extends StatefulWidget {
   final bool obscureText, enableSuggestions, autocorrect;
   final double marginTop, marginRight;
   final double? width;
+  final String? Function(String?)? validator;
+  final int? maxLength;
 
   CampoEntrada(
     {
@@ -20,7 +22,9 @@ class CampoEntrada extends StatefulWidget {
       this.autocorrect = true,
       this.marginTop = 24,
       this.marginRight = 0,
-      this.width
+      this.width,
+      this.validator,
+      this.maxLength,
     }
   ) : super(key: key);
 
@@ -46,9 +50,12 @@ class _CampoEntradaState extends State<CampoEntrada> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: widget.titulo,
+          counterText: ''
         ),
         keyboardType: widget.keyboardType,
         inputFormatters: widget.inputFormatters,
+        validator: widget.validator,
+        maxLength: widget.maxLength,
       ),
       width: widget.width,
     );

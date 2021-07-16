@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class PaginaFormulario extends StatefulWidget {
   final String titulo;
   final List<Widget> children;
+  final GlobalKey<FormState>? formKey;
 
   PaginaFormulario(
     {
       Key? key,
       required this.titulo,
-      this.children = const <Widget>[]
+      this.children = const <Widget>[],
+      this.formKey
     }
   ) : super(key: key);
 
@@ -17,7 +19,6 @@ class PaginaFormulario extends StatefulWidget {
 }
 
 class _PaginaFormularioState extends State<PaginaFormulario> {
-  final _form = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _PaginaFormularioState extends State<PaginaFormulario> {
         centerTitle: true
       ),
       body: Form(
-        key: _form,
+        key: widget.formKey,
         child: Padding(
           padding: const EdgeInsets.all(42),
           child: Column( children: widget.children ),
