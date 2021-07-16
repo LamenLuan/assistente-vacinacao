@@ -1,6 +1,7 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
+import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/pages/cadastro_pessoa/cadastro_pessoa1_page.dart';
 import 'package:assistente_vacinacao/pages/slider_page_controller.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,37 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final contas = [
+    Cidadao(cpf: '111.111.111-11', senha: '123456')
+  ];
+
   final _formKey = GlobalKey<FormState>();
+  final _cpfController = TextEditingController();
+  final _senhaController = TextEditingController();
+
   final cpfFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') }
   );
 
   void fazerLogin() {
     if( _formKey.currentState!.validate() ) {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (_) => SliderPage()
-        ));
+      limparCampos();
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => SliderPage()
+      ));
     }
+  }
+
+  void cadastrar() {
+    limparCampos();
+    Navigator.push(context, MaterialPageRoute(
+      builder: (_) => CadastroPessoa1Page()
+    ));
+  }
+
+  void limparCampos() {
+    _cpfController.clear();
+    _senhaController.clear();
   }
   
   @override
@@ -37,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         CampoEntrada(
           titulo: 'CPF',
+          controller: _cpfController,
           enableSuggestions: false,
           autocorrect: false,
           keyboardType: TextInputType.number,
@@ -50,12 +72,23 @@ class _LoginPageState extends State<LoginPage> {
         ),
         CampoEntrada(
           titulo: 'Senha',
+          controller: _senhaController,
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
           validator: (value) {
             if(value!.isEmpty) return 'Informe a senha';
             if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
+
+            Cidadao? encontrado;
+            for (var conta in contas) {
+              if(conta.cpf == _cpfController.text) {
+                encontrado = conta;
+                break;
+              }
+            }
+            if(encontrado == null || encontrado.senha != value)
+              return 'Dados incorretos';
           },
         ),
         Botao(
@@ -64,11 +97,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         Botao(
           titulo: 'Cadastrar',
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (_) => CadastroPessoa1Page()
-            ));
-          },
+          onPressed: cadastrar,
           marginTop: 148,
         )
       ]
