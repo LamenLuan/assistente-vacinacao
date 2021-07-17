@@ -28,6 +28,14 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
       CidadaoRepository.cidadaos.add(cidadao);
       
       for (var i = 0; i < 4; i++) Navigator.pop(context);
+      
+      FocusScope.of(context).requestFocus( new FocusNode() );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cadastro realizado com sucesso!')
+        )
+      );
     }
   }
 
