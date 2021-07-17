@@ -38,7 +38,7 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
 
   String? senhaValidator(String? value) {
     if(value!.isEmpty) return 'Informe a senha';
-    if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
+    if(value.length < 6) return 'A senha deve conter pelo menos 6 dígitos';
   }
 
   String? confirmacaoSenhaValidator(String? value) {
