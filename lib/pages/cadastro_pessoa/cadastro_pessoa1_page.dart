@@ -71,7 +71,8 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
           titulo: 'Nome Completo',
           controller: _nomeController,
           keyboardType: TextInputType.name,
-          validator: nomeValidator
+          validator: nomeValidator,
+          maxLength: 64,
         ),
         CampoEntrada(
           titulo: 'CPF',
