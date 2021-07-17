@@ -8,14 +8,9 @@ import 'package:intl/intl.dart';
 import 'cadastro_pessoa3_page.dart';
 
 class CadastroPessoa2Page extends StatefulWidget {
-  final List<Cidadao> contas;
   final Cidadao cidadao;
   
-  CadastroPessoa2Page({
-    Key? key,
-    required this.contas,
-    required this.cidadao
-  }) : super(key: key);
+  CadastroPessoa2Page({Key? key, required this.cidadao}) : super(key: key);
 
   @override
   _CadastroPessoa2PageState createState() => _CadastroPessoa2PageState();
@@ -72,10 +67,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
       cidadao.comorbidade = isComorbidade;
 
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa3Page(
-          contas: widget.contas,
-          cidadao: widget.cidadao,
-        )
+        builder: (_) => CadastroPessoa3Page(cidadao: widget.cidadao)
       ));
     }
   }

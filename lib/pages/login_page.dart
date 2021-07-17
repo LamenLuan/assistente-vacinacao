@@ -5,6 +5,7 @@ import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/pages/cadastro_pessoa/cadastro_pessoa1_page.dart';
 import 'package:assistente_vacinacao/pages/slider_page_controller.dart';
+import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,18 +19,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final contas = [
-    Cidadao(
-      cpf: '111.111.111-11',
-      senha: '123456',
-      nome: 'Jon Jonas Jose',
-      dataNascimento: DateTime(1,1,2001),
-      isMasculino: true,
-      comorbidade: false,
-      telefone: '',
-      email: ''
-    )
-  ];
 
   final _formKey = GlobalKey<FormState>();
   final _cpfController = TextEditingController();
@@ -51,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   void cadastrar() {
     limparCampos();
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => CadastroPessoa1Page(contas: contas)
+      builder: (_) => CadastroPessoa1Page()
     ));
   }
 
@@ -69,13 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     if(value!.isEmpty) return 'Informe a senha';
     if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
 
-    Cidadao? encontrado;
-    for (var conta in contas) {
-      if(conta.cpf == _cpfController.text) {
-        encontrado = conta;
-        break;
-      }
-    }
+    Cidadao? encontrado = CidadaoRepository.findCidadao(_cpfController.text);
     if(encontrado == null || encontrado.senha != value)
       return 'Dados incorretos, verifique CPF e senha';
   }

@@ -3,6 +3,7 @@ import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -10,11 +11,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'cadastro_pessoa2_page.dart';
 
 class CadastroPessoa1Page extends StatefulWidget {
-  final List<Cidadao> contas;
-  CadastroPessoa1Page({
-    Key? key,
-    required this.contas
-  }) : super(key: key);
+  CadastroPessoa1Page({Key? key,}) : super(key: key);
 
   @override
   _CadastroPessoa1PageState createState() => _CadastroPessoa1PageState();
@@ -44,10 +41,7 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
       cidadao.nome = _nomeController.text;
 
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa2Page(
-          contas: widget.contas,
-          cidadao: cidadao,
-        )
+        builder: (_) => CadastroPessoa2Page(cidadao: cidadao)
       ));
     }
   }
@@ -77,11 +71,10 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
             cpfFormatter,
           ],
           validator: (value) {
-             if(value!.isEmpty) return 'Informe o CPF';
-             if( !cpfFormatter.isFill() ) return 'CPF incompleto';
-             for (var conta in widget.contas) {
-               if(conta.cpf == _cpfController.text) return 'CPF já cadastrado';
-             }
+            if(value!.isEmpty) return 'Informe o CPF';
+            if( !cpfFormatter.isFill() ) return 'CPF incompleto';
+            if(CidadaoRepository.findCidadao(_cpfController.text) != null)
+              return 'CPF já cadastrado';
           }
         ),
         Botao(

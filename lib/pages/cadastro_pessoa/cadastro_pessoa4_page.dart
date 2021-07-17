@@ -3,18 +3,15 @@ import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/pages/login_page.dart';
+import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
 import 'package:flutter/material.dart';
 
 
 class CadastroPessoa4Page extends StatefulWidget {
-  final List<Cidadao> contas;
   final Cidadao cidadao;
 
-  CadastroPessoa4Page({
-    Key? key,
-    required this.contas,
-    required this.cidadao
-  }) : super(key: key);
+  CadastroPessoa4Page({Key? key, required this.cidadao}) : super(key: key);
 
   @override
   _CadastroPessoa4PageState createState() => _CadastroPessoa4PageState();
@@ -28,7 +25,7 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
     if( _formKey.currentState!.validate() ) {
       Cidadao cidadao = widget.cidadao;
       cidadao.senha = _senhaController.text;
-      widget.contas.add(cidadao);
+      CidadaoRepository.cidadaos.add(cidadao);
       
       for (var i = 0; i < 4; i++) Navigator.pop(context);
     }

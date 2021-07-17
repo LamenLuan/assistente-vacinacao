@@ -10,14 +10,9 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'cadastro_pessoa4_page.dart';
 
 class CadastroPessoa3Page extends StatefulWidget {
-  final List<Cidadao> contas;
   final Cidadao cidadao;
   
-  CadastroPessoa3Page({
-    Key? key,
-    required this.contas,
-    required this.cidadao
-  }) : super(key: key);
+  CadastroPessoa3Page({Key? key, required this.cidadao}) : super(key: key);
 
   @override
   _CadastroPessoa3PageState createState() => _CadastroPessoa3PageState();
@@ -42,10 +37,7 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
         cidadao.email = _emailController.text;
 
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa4Page(
-          cidadao: widget.cidadao,
-          contas: widget.contas,
-        )
+        builder: (_) => CadastroPessoa4Page(cidadao: widget.cidadao)
       ));
     }
   }
