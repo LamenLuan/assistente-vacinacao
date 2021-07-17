@@ -17,11 +17,24 @@ class CadastroPessoa2Page extends StatefulWidget {
 }
 
 class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
-  bool isMasculino = true, isComorbidade = false;
+  bool isMasculino = true, comorbidade = false;
   DateTime? dataNascimento;
 
-  final _formKey = GlobalKey<FormState>();
   final _dataController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void prosseguir() {
+    if( _formKey.currentState!.validate() ) {
+      Cidadao cidadao = widget.cidadao;
+      cidadao.dataNascimento = dataNascimento!;
+      cidadao.isMasculino = isMasculino;
+      cidadao.comorbidade = comorbidade;
+
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => CadastroPessoa3Page(cidadao: widget.cidadao)
+      ));
+    }
+  }
 
   Future selecionaData() async {
     FocusScope.of(context).requestFocus( new FocusNode() );
@@ -36,8 +49,8 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
     );
 
     if(selecionada != null) {
-      setState(
-        () => _dataController.value = TextEditingValue(
+      setState( () =>
+        _dataController.value = TextEditingValue(
           text: formatter.format(selecionada)
         )
       );
@@ -55,21 +68,12 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
   void onComorbidadeChanged(bool? valor)
   {
     setState(() {
-      isComorbidade = valor!;
+      comorbidade = valor!;
     });
   }
 
-  void prosseguir() {
-    if( _formKey.currentState!.validate() ) {
-      Cidadao cidadao = widget.cidadao;
-      cidadao.dataNascimento = dataNascimento!;
-      cidadao.isMasculino = isMasculino;
-      cidadao.comorbidade = isComorbidade;
-
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa3Page(cidadao: widget.cidadao)
-      ));
-    }
+  String? dataNascimentoValidator(String? value) {
+    if(value!.isEmpty) return 'Informe a data de nascimento';
   }
 
   @override
@@ -93,10 +97,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
             suffixIcon: Icon(Icons.calendar_today)
           ),
           onTap: selecionaData,
-          validator: (value) {
-            if(value!.isEmpty) return 'Informe a data de nascimento';
-          },
-          
+          validator: dataNascimentoValidator,
         ),
         Row(
           children: [
@@ -134,13 +135,13 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
           children: [
             Radio(
               value: true,
-              groupValue: isComorbidade,
+              groupValue: comorbidade,
               onChanged: onComorbidadeChanged,
             ),
             Text( 'Sim', style: TextStyle(fontSize: 20) ),
             Radio(
               value: false,
-              groupValue: isComorbidade,
+              groupValue: comorbidade,
               onChanged: onComorbidadeChanged
             ),
             Text( 'Não', style: TextStyle(fontSize: 20) ),

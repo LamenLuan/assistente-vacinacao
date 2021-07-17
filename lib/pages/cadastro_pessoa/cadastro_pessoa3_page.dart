@@ -22,6 +22,7 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
   final _telefoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   final _telefoneFormatter = MaskTextInputFormatter(
     mask: '(##) #####-####', filter: { "#": RegExp(r'[0-9]') }
   );
@@ -42,6 +43,16 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
     }
   }
 
+  String? telefoneValidator(String? value) {
+    if(value!.isEmpty) return 'Informe o telefone';
+    if( !_telefoneFormatter.isFill() ) return 'Telefone incompleto';
+  }
+
+  String? emailValidator(String? value) {
+    if(value!.isNotEmpty && !_validadorEmail.hasMatch(value) )
+      return 'Email incompleto';
+  }
+
   @override
   Widget build(BuildContext context) {
     return PaginaFormulario(
@@ -53,22 +64,14 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
           titulo: 'Telefone',
           controller: _telefoneController,
           keyboardType: TextInputType.phone,
-          inputFormatters: [
-            _telefoneFormatter,
-          ],
-          validator: (value) {
-             if(value!.isEmpty) return 'Informe o telefone';
-             if( !_telefoneFormatter.isFill() ) return 'Telefone incompleto';
-          }
+          inputFormatters: [_telefoneFormatter],
+          validator: telefoneValidator
         ),
         CampoEntrada(
           titulo: 'Email (Opcional)',
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-              if(value!.isNotEmpty && !_validadorEmail.hasMatch(value) ) 
-                return 'Email incompleto';
-          }
+          validator: emailValidator
         ),
         Botao(
           titulo: 'Avançar',

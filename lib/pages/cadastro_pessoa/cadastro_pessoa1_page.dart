@@ -31,7 +31,8 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
   final _nomeController = TextEditingController();
   final _cpfController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final cpfFormatter = MaskTextInputFormatter(
+  
+  final _cpfFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') }
   );
 
@@ -46,20 +47,31 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
     }
   }
 
+  String? nomeValidator(String? value) {
+    if(value!.trim().isEmpty) return 'Informe o nome completo';
+  }
+
+  String? cpfValidator(String? value) {
+    if(value!.isEmpty) return 'Informe o CPF';
+    if( !_cpfFormatter.isFill() ) return 'CPF incompleto';
+    if(CidadaoRepository.findCidadao(_cpfController.text) != null)
+      return 'CPF já cadastrado';
+  }
+
   @override
   Widget build(BuildContext context) {
     return PaginaFormulario(
       formKey: _formKey,
       titulo: 'Parte 1 de 4',
       children: [
-        Texto(texto:'Comece com seu nome completo e cpf'),
+        Texto(
+          texto:'Comece com seu nome completo e cpf'
+        ),
         CampoEntrada(
-          titulo: 'Nome',
+          titulo: 'Nome Completo',
           controller: _nomeController,
           keyboardType: TextInputType.name,
-          validator: (value) {
-             if(value!.trim().isEmpty) return 'Informe o nome completo';
-          }
+          validator: nomeValidator
         ),
         CampoEntrada(
           titulo: 'CPF',
@@ -67,15 +79,8 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
           enableSuggestions: false,
           autocorrect: false,
           keyboardType: TextInputType.number,
-          inputFormatters: [
-            cpfFormatter,
-          ],
-          validator: (value) {
-            if(value!.isEmpty) return 'Informe o CPF';
-            if( !cpfFormatter.isFill() ) return 'CPF incompleto';
-            if(CidadaoRepository.findCidadao(_cpfController.text) != null)
-              return 'CPF já cadastrado';
-          }
+          inputFormatters: [_cpfFormatter],
+          validator: cpfValidator
         ),
         Botao(
           titulo: 'Avançar',

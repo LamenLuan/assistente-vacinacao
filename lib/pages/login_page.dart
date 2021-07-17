@@ -20,11 +20,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  final _formKey = GlobalKey<FormState>();
   final _cpfController = TextEditingController();
   final _senhaController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  final cpfFormatter = MaskTextInputFormatter(
+  final _cpfFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') }
   );
 
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String? cpfValidator(String? value) {
     if(value!.isEmpty) return 'Informe o CPF';
-    if( !cpfFormatter.isFill() ) return 'CPF incompleto';
+    if( !_cpfFormatter.isFill() ) return 'CPF incompleto';
   }
 
   String? senhaValidator(String? value) {
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           enableSuggestions: false,
           autocorrect: false,
           keyboardType: TextInputType.number,
-          inputFormatters: [cpfFormatter],
+          inputFormatters: [_cpfFormatter],
           validator: cpfValidator
         ),
         CampoEntrada(

@@ -3,7 +3,6 @@ import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
-import 'package:assistente_vacinacao/pages/login_page.dart';
 import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +17,8 @@ class CadastroPessoa4Page extends StatefulWidget {
 }
 
 class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
-  final _formKey = GlobalKey<FormState>();
   final _senhaController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   void concluir() {
     if( _formKey.currentState!.validate() ) {
@@ -32,11 +31,19 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
       FocusScope.of(context).requestFocus( new FocusNode() );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Cadastro realizado com sucesso!')
-        )
+        SnackBar( content: Text('Cadastro realizado com sucesso!') )
       );
     }
+  }
+
+  String? senhaValidator(String? value) {
+    if(value!.isEmpty) return 'Informe a senha';
+    if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
+  }
+
+  String? confirmacaoSenhaValidator(String? value) {
+    if(value!.isEmpty) return 'Informe novamente a senha';
+    if(value != _senhaController.text) return 'Senhas não são iguais';
   }
 
   @override
@@ -46,8 +53,8 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
       titulo: 'Parte 4 de 4',
       children: [
         Texto(
-          texto:'Por último, informe sua senha, lembre de anotá-la em algum ' +
-          'lugar seguro'
+          texto:'Por último, informe sua senha, lembre-se de anotá-la em algum '
+          + 'lugar seguro'
         ),
         CampoEntrada(
           titulo: 'Senha',
@@ -55,20 +62,14 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
           enableSuggestions: false,
           autocorrect: false,
           controller: _senhaController,
-          validator: (value) {
-            if(value!.isEmpty) return 'Informe a senha';
-            if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
-          }
+          validator: senhaValidator
         ),
         CampoEntrada(
           titulo: 'Confirmar sua senha',
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
-          validator: (value) {
-            if(value!.isEmpty) return 'Informe novamente a senha';
-            if(value != _senhaController.text) return 'Senhas não são iguais';
-          }
+          validator: confirmacaoSenhaValidator
         ),
         Botao(
           titulo: 'Concluir',
