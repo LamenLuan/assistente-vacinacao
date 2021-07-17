@@ -1,6 +1,7 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
+import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/pages/cadastro_pessoa/cadastro_pessoa1_page.dart';
 import 'package:assistente_vacinacao/pages/slider_page_controller.dart';
@@ -58,6 +59,26 @@ class _LoginPageState extends State<LoginPage> {
     _cpfController.clear();
     _senhaController.clear();
   }
+
+  String? cpfValidator(String? value) {
+    if(value!.isEmpty) return 'Informe o CPF';
+    if( !cpfFormatter.isFill() ) return 'CPF incompleto';
+  }
+
+  String? senhaValidator(String? value) {
+    if(value!.isEmpty) return 'Informe a senha';
+    if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
+
+    Cidadao? encontrado;
+    for (var conta in contas) {
+      if(conta.cpf == _cpfController.text) {
+        encontrado = conta;
+        break;
+      }
+    }
+    if(encontrado == null || encontrado.senha != value)
+      return 'Dados incorretos, verifique CPF e senha';
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -65,19 +86,15 @@ class _LoginPageState extends State<LoginPage> {
       formKey: _formKey,
       titulo: 'Assitente de Vacinação',
       children: [
+        Texto(texto: 'Seja bem vindo ao seu assistente de vacinação!'),
         CampoEntrada(
           titulo: 'CPF',
           controller: _cpfController,
           enableSuggestions: false,
           autocorrect: false,
           keyboardType: TextInputType.number,
-          inputFormatters: [
-            cpfFormatter,
-          ],
-          validator: (value) {
-             if(value!.isEmpty) return 'Informe o CPF';
-             if( !cpfFormatter.isFill() ) return 'CPF incompleto';
-          }
+          inputFormatters: [cpfFormatter],
+          validator: cpfValidator
         ),
         CampoEntrada(
           titulo: 'Senha',
@@ -85,20 +102,7 @@ class _LoginPageState extends State<LoginPage> {
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
-          validator: (value) {
-            if(value!.isEmpty) return 'Informe a senha';
-            if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
-
-            Cidadao? encontrado;
-            for (var conta in contas) {
-              if(conta.cpf == _cpfController.text) {
-                encontrado = conta;
-                break;
-              }
-            }
-            if(encontrado == null || encontrado.senha != value)
-              return 'Dados incorretos';
-          },
+          validator: senhaValidator,
         ),
         Botao(
           titulo: 'Entrar',
@@ -107,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
         Botao(
           titulo: 'Cadastrar',
           onPressed: cadastrar,
-          marginTop: 148,
+          marginTop: 100,
         )
       ]
     );
