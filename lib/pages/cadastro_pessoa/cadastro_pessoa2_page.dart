@@ -1,6 +1,6 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
-import 'package:assistente_vacinacao/components/texto_formulario.dart';
+import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +86,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
       formKey: _formKey,
       titulo: 'Parte 2 de 4',
       children: [
-        TextoFormulario(
+        Texto(
           texto:'Insira sua data de nascimento e seus dados físicos',
           marginBottom: 24,
         ),
@@ -108,7 +108,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
         ),
         Row(
           children: [
-            TextoFormulario(
+            Texto(
               texto: 'Gênero:',
               marginTop: 24,
             )
@@ -132,7 +132,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
         ),
         Row(
           children: [
-            TextoFormulario(
+            Texto(
               texto: 'Comorbidade?',
               marginTop: 24,
             )

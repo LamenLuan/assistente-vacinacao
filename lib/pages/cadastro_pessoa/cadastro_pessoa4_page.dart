@@ -1,7 +1,7 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
-import 'package:assistente_vacinacao/components/texto_formulario.dart';
+import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +40,7 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
       formKey: _formKey,
       titulo: 'Parte 4 de 4',
       children: [
-        TextoFormulario(
+        Texto(
           texto:'Por último, informe sua senha, lembre de anotá-la em algum ' +
           'lugar seguro'
         ),

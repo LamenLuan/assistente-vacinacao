@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 
-class TextoFormulario extends StatefulWidget {
+class Texto extends StatefulWidget {
   final String texto;
   final double marginTop, marginBottom;
   final TextAlign textAlign;
 
-  TextoFormulario(
-    {
-      Key? key,
-      required this.texto,
-      this.marginTop = 0,
-      this.marginBottom = 0,
-      this.textAlign = TextAlign.center
-    }
-  ) : super(key: key);
+  Texto({
+    Key? key,
+    required this.texto,
+    this.marginTop = 0,
+    this.marginBottom = 0,
+    this.textAlign = TextAlign.center
+  }) : super(key: key);
 
   @override
-  _TextoFormularioState createState() => _TextoFormularioState();
+  _TextoState createState() => _TextoState();
 }
 
-class _TextoFormularioState extends State<TextoFormulario> {
+class _TextoState extends State<Texto> {
   @override
   Widget build(BuildContext context) {
     return Container(
