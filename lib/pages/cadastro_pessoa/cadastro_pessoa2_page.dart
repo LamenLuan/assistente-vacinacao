@@ -1,13 +1,21 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto_formulario.dart';
+import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'cadastro_pessoa3_page.dart';
 
 class CadastroPessoa2Page extends StatefulWidget {
-  CadastroPessoa2Page({Key? key}) : super(key: key);
+  final List<Cidadao> contas;
+  final Cidadao cidadao;
+  
+  CadastroPessoa2Page({
+    Key? key,
+    required this.contas,
+    required this.cidadao
+  }) : super(key: key);
 
   @override
   _CadastroPessoa2PageState createState() => _CadastroPessoa2PageState();
@@ -15,6 +23,8 @@ class CadastroPessoa2Page extends StatefulWidget {
 
 class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
   bool isMasculino = true, isComorbidade = false;
+  DateTime? dataNascimento;
+
   final _formKey = GlobalKey<FormState>();
   final _dataController = TextEditingController();
 
@@ -30,11 +40,14 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
       locale: const Locale('pt', 'BR')
     );
 
-    if(selecionada != null) setState(
-      () => _dataController.value = TextEditingValue(
-        text: formatter.format(selecionada)
-      )
-    );
+    if(selecionada != null) {
+      setState(
+        () => _dataController.value = TextEditingValue(
+          text: formatter.format(selecionada)
+        )
+      );
+      dataNascimento = selecionada;
+    }
   }
 
   void onGeneroChanged(bool? valor)
@@ -53,8 +66,16 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
 
   void prosseguir() {
     if( _formKey.currentState!.validate() ) {
+      Cidadao cidadao = widget.cidadao;
+      cidadao.dataNascimento = dataNascimento!;
+      cidadao.isMasculino = isMasculino;
+      cidadao.comorbidade = isComorbidade;
+
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa3Page()
+        builder: (_) => CadastroPessoa3Page(
+          contas: widget.contas,
+          cidadao: widget.cidadao,
+        )
       ));
     }
   }

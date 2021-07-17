@@ -18,7 +18,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final contas = [
-    Cidadao(cpf: '111.111.111-11', senha: '123456')
+    Cidadao(
+      cpf: '111.111.111-11',
+      senha: '123456',
+      nome: 'Jon Jonas Jose',
+      dataNascimento: DateTime(1,1,2001),
+      isMasculino: true,
+      comorbidade: false,
+      telefone: '',
+      email: ''
+    )
   ];
 
   final _formKey = GlobalKey<FormState>();
@@ -41,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   void cadastrar() {
     limparCampos();
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => CadastroPessoa1Page()
+      builder: (_) => CadastroPessoa1Page(contas: contas)
     ));
   }
 

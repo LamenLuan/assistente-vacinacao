@@ -2,6 +2,7 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto_formulario.dart';
+import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -9,25 +10,42 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'cadastro_pessoa4_page.dart';
 
 class CadastroPessoa3Page extends StatefulWidget {
-  CadastroPessoa3Page({Key? key}) : super(key: key);
+  final List<Cidadao> contas;
+  final Cidadao cidadao;
+  
+  CadastroPessoa3Page({
+    Key? key,
+    required this.contas,
+    required this.cidadao
+  }) : super(key: key);
 
   @override
   _CadastroPessoa3PageState createState() => _CadastroPessoa3PageState();
 }
 
 class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
+  final _telefoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final telefoneFormatter = MaskTextInputFormatter(
+  final _telefoneFormatter = MaskTextInputFormatter(
     mask: '(##) #####-####', filter: { "#": RegExp(r'[0-9]') }
   );
-  final validadorEmail = RegExp(
+  final _validadorEmail = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
   );
 
   void prosseguir() {
     if( _formKey.currentState!.validate() ) {
+      Cidadao cidadao = widget.cidadao;
+      cidadao.telefone = _telefoneController.text;
+      if(_emailController.text.isNotEmpty)
+        cidadao.email = _emailController.text;
+
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa4Page()
+        builder: (_) => CadastroPessoa4Page(
+          cidadao: widget.cidadao,
+          contas: widget.contas,
+        )
       ));
     }
   }
@@ -41,20 +59,22 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
         TextoFormulario(texto:'Agora suas informações de contato'),
         CampoEntrada(
           titulo: 'Telefone',
+          controller: _telefoneController,
           keyboardType: TextInputType.phone,
           inputFormatters: [
-            telefoneFormatter,
+            _telefoneFormatter,
           ],
           validator: (value) {
              if(value!.isEmpty) return 'Informe o telefone';
-             if( !telefoneFormatter.isFill() ) return 'Telefone incompleto';
+             if( !_telefoneFormatter.isFill() ) return 'Telefone incompleto';
           }
         ),
         CampoEntrada(
           titulo: 'Email (Opcional)',
+          controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
-              if(value!.isNotEmpty && !validadorEmail.hasMatch(value) ) 
+              if(value!.isNotEmpty && !_validadorEmail.hasMatch(value) ) 
                 return 'Email incompleto';
           }
         ),
