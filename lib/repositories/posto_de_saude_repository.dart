@@ -12,7 +12,7 @@ class PostoDeSaudeRepository {
       nome: 'Unidade de Saúde Silas Sallen',
       endereco: 'Rua Rodrigo Silva - Uvaranas - ' +
           ' Vila Claudionora, Ponta Grossa - PR, 84030-040',
-      diasDisponiveis: ['30/08/2021', '01/09/2021', '02/098/2021'],
+      diasDisponiveis: ['30/08/2021', '01/09/2021', '02/09/2021'],
     ),
     PostoDeSaude(
       nome: 'Unidade de Saúde Antonio Saliba',
