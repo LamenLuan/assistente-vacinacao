@@ -28,11 +28,15 @@ class _LoginPageState extends State<LoginPage> {
     mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') }
   );
 
+  Cidadao? encontrado;
+
   void fazerLogin() {
     if( _formKey.currentState!.validate() ) {
+      Cidadao cidadao = encontrado!;
+      
       limparCampos();
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => SliderPage()
+        builder: (_) => SliderPage(cidadao: cidadao)
       ));
     }
   }
@@ -58,8 +62,8 @@ class _LoginPageState extends State<LoginPage> {
     if(value!.isEmpty) return 'Informe a senha';
     if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
 
-    Cidadao? encontrado = CidadaoRepository.findCidadao(_cpfController.text);
-    if(encontrado == null || encontrado.senha != value)
+    encontrado = CidadaoRepository.findCidadao(_cpfController.text);
+    if(encontrado == null || encontrado!.senha != value)
       return 'Dados incorretos, verifique CPF e senha';
   }
   
