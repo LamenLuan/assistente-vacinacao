@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     if( _formKey.currentState!.validate() ) {
       Cidadao cidadao = encontrado!;
       
+      FocusScope.of(context).requestFocus(new FocusNode());
       limparCampos();
       Navigator.push(context, MaterialPageRoute(
         builder: (_) => SliderPage(cidadao: cidadao)
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void cadastrar() {
+    FocusScope.of(context).requestFocus(new FocusNode());
     limparCampos();
     Navigator.push(context, MaterialPageRoute(
       builder: (_) => CadastroPessoa1Page()

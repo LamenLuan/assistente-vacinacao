@@ -22,24 +22,47 @@ class _PrincipalPageState extends State<PrincipalPage> {
   }
 
   void cancelarAgendamento() {
-    setState(() {
-      widget.cidadao.setAgendamento(null);
-    });
+    AlertDialog confirmacao = AlertDialog(
+      title: Text('Deseja mesmo cancelar?'),
+      content: Text('Esta ação não pode ser revertida.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('NÃO'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              widget.cidadao.setAgendamento(null);
+            });
+            Navigator.pop(context);
+          },
+          child: Text('SIM'),
+        ),
+      ],
+    );
+    showDialog(context: context, builder: (context) => confirmacao);
   }
 
-  String? verificaAgendamento1(Cidadao cidadao) {
+  String? agendamento(Cidadao cidadao) {
     if (cidadao.temAgendamento)
       return 'Agendada: Aplicação da ${cidadao.agendamento.dose}ª dose';
     else
       return 'Você ainda não possui um agendamento 📅';
   }
 
-  String? verificaAgendamento2(Cidadao cidadao) {
+  String? postoEndereco(Cidadao cidadao) {
     if (cidadao.temAgendamento)
       return '${cidadao.agendamento.posto.nome}\n\n' +
-          'Endereço: ${cidadao.agendamento.posto.endereco}';
+          '${cidadao.agendamento.posto.endereco}';
     else
       return 'Marque um agendamento clicando no ícone de calendário abaixo 👇';
+  }
+
+  String? dataHora(Cidadao cidadao) {
+    if (cidadao.temAgendamento)
+      return '${cidadao.agendamento.dia} - ' +
+          '${cidadao.agendamento.horario}';
   }
 
   @override
@@ -58,12 +81,17 @@ class _PrincipalPageState extends State<PrincipalPage> {
             marginBottom: 20,
           ),
           Texto(
-            texto: verificaAgendamento1(widget.cidadao)!,
+            texto: agendamento(widget.cidadao)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: verificaAgendamento2(widget.cidadao)!,
+            texto: postoEndereco(widget.cidadao)!,
+            marginTop: 20,
+            marginBottom: 20,
+          ),
+          Texto(
+            texto: dataHora(widget.cidadao)!,
             marginTop: 20,
             marginBottom: 20,
           ),

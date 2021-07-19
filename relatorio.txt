@@ -1,0 +1,10 @@
+Nomes:
+Luan Leme
+Gabriel Rufino
+
+Funcionalidades faltantes:
+Tela de chat, tela de rotas do maps, alerts de cancelamento de agendamento.
+
+Atividades realizadas:
+Luan Leme -> Tela de login, telas de cadastro de usuário.
+Gabriel Rufino -> Tela principal, telas de agendamento.
