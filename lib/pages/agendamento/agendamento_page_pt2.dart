@@ -28,28 +28,51 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
   String? horarioSelecionado;
   final _formKey = GlobalKey<FormState>();
 
+  void agendar() {
+    widget.cidadao.setAgendamento(
+      Agendamento(
+        dia: diaSelecionado!,
+        horario: horarioSelecionado!,
+        dose: 1,
+        posto: widget.posto
+      )
+    );
+
+    for (var i = 0; i < 3; i++) Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(
+      builder: (_) => SliderPage(cidadao: widget.cidadao)
+    ));
+
+    FocusScope.of(context).requestFocus(new FocusNode());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Agendamento realizado com sucesso!'))
+    );
+  }
+
   void confirmar() {
     if ( _formKey.currentState!.validate() ) {
-
-      widget.cidadao.setAgendamento(
-        Agendamento(
-          dia: diaSelecionado!,
-          horario: horarioSelecionado!,
-          dose: 1,
-          posto: widget.posto
-        )
-      );
-
-      for (var i = 0; i < 3; i++) Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => SliderPage(cidadao: widget.cidadao)
-      ));
-
-      FocusScope.of(context).requestFocus(new FocusNode());
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Agendamento realizado com sucesso!'))
-      );
+      if (widget.cidadao.temAgendamento) {
+        AlertDialog confirmacao = AlertDialog(
+          title: Text('Deseja mesmo reagendar?'),
+          content: Text('O agendamento anterior será cancelado.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('NÃO'),
+            ),
+            TextButton(
+              onPressed: () {
+                agendar();
+                Navigator.pop(context);
+              },
+              child: Text('SIM'),
+            ),
+          ],
+        );
+        showDialog(context: context, builder: (context) => confirmacao);
+      }
+      else agendar();
     }
   }
 

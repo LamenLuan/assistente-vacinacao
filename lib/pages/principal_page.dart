@@ -61,8 +61,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   String? dataHora(Cidadao cidadao) {
     if (cidadao.temAgendamento)
-      return '${cidadao.agendamento.dia} - ' +
-          '${cidadao.agendamento.horario}';
+      return '${cidadao.agendamento.dia} - ${cidadao.agendamento.horario}';
+    else return '';
   }
 
   @override
