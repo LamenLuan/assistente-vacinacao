@@ -1,10 +1,13 @@
 import 'package:assistente_vacinacao/components/botao.dart';
+import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
 import 'package:flutter/material.dart';
+
+import '../slider_page_controller.dart';
 
 class AgendamentoPagePt2 extends StatefulWidget {
   final Cidadao cidadao;
@@ -37,7 +40,10 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
         )
       );
 
-      for (var i = 0; i < 2; i++) Navigator.pop(context);
+      for (var i = 0; i < 3; i++) Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => SliderPage(cidadao: widget.cidadao)
+      ));
 
       FocusScope.of(context).requestFocus(new FocusNode());
 
@@ -45,6 +51,36 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
         SnackBar(content: Text('Agendamento realizado com sucesso!'))
       );
     }
+  }
+
+  void onDiaChanged(String? value) {
+    setState(() {
+      diaSelecionado = value;
+    });
+  }
+
+  void onHorarioChanged(String? value) {
+    setState(() {
+      horarioSelecionado = value;
+    });
+  }
+
+  List<DropdownMenuItem<String>> listaDias() {
+    return widget.posto.diasDisponiveis.map((String dia) {
+      return DropdownMenuItem(
+        value: dia,
+        child: Text(dia),
+      );
+    }).toList();
+  }
+
+  List<DropdownMenuItem<String>> listaHorarios() {
+    return widget.posto.horariosAgendamento!.map((String horario) {
+      return DropdownMenuItem(
+        value: horario,
+        child: Text(horario),
+      );
+    }).toList();
   }
 
   @override
@@ -58,41 +94,23 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
             'para a vacinação',
           marginBottom: 24,
         ),
-        DropdownButtonFormField(
-          isExpanded: true,
-          hint: Text('Dia'),
-          onChanged: (String? diaAgendamento) {
-            setState(() {
-              diaSelecionado = diaAgendamento!;
-            });
-          },
-          items: widget.posto.diasDisponiveis.map((String dia) {
-            return DropdownMenuItem(
-              value: dia,
-              child: Text(dia),
-            );
-          }).toList(),
+        CampoDropDown(
+          hint: 'Dia',
           value: diaSelecionado,
-          validator: (value) => value == null ? 'Campo obrigatório' : null,
+          onChanged: onDiaChanged,
+          list: listaDias(),
+          marginBottom: 24,
         ),
-        DropdownButtonFormField(
-          isExpanded: true,
-          hint: Text('Horário'),
-          onChanged: (String? horarioAgendamento) {
-            setState(() {
-              horarioSelecionado = horarioAgendamento!;
-            });
-          },
-          items: widget.posto.horariosAgendamento!.map((String horario) {
-            return DropdownMenuItem(
-              value: horario,
-              child: Text(horario),
-            );
-          }).toList(),
+        CampoDropDown(
+          hint: 'Horário',
           value: horarioSelecionado,
-          validator: (value) => value == null ? 'Campo obrigatório' : null,
+          onChanged: onHorarioChanged,
+          list: listaHorarios()
         ),
-        Botao(titulo: 'Confirmar', onPressed: confirmar)
+        Botao(
+          titulo: 'Confirmar',
+          onPressed: confirmar
+        )
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:assistente_vacinacao/components/botao.dart';
+import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
@@ -18,8 +19,6 @@ class AgendamentoPagePt1 extends StatefulWidget {
 
 class _AgendamentoPagePt1State extends State<AgendamentoPagePt1> {
   final _formKey = GlobalKey<FormState>();
-
-  List<String>? nomesPostos = [];
   String? localSelecionado;
 
   void prosseguir() {
@@ -38,17 +37,23 @@ class _AgendamentoPagePt1State extends State<AgendamentoPagePt1> {
     }
   }
 
-  void inicializaLista() {
-    if (nomesPostos!.isEmpty) {
-      PostoDeSaudeRepository.postos.forEach((posto) {
-        nomesPostos!.add(posto.nome);
-      });
-    }
+  void onLocalChanged(String? value) {
+    setState(() {
+      localSelecionado = value!;
+    });
+  }
+
+  List<DropdownMenuItem<String>> listaNomesPostos() {
+    return PostoDeSaudeRepository.postos.map((PostoDeSaude posto) {
+      return DropdownMenuItem(
+        value: posto.nome,
+        child: Text(posto.nome),
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    inicializaLista();
     return PaginaFormulario(
       formKey: _formKey,
       titulo: 'Parte 1 de 2',
@@ -57,24 +62,11 @@ class _AgendamentoPagePt1State extends State<AgendamentoPagePt1> {
           texto: 'Selecione em qual unidade gostaria de agendar',
           marginBottom: 24,
         ),
-        Center(
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            hint: Text('Local'),
-            onChanged: (String? novoLocal) {
-              setState(() {
-                localSelecionado = novoLocal!;
-              });
-            },
-            items: nomesPostos!.map((String local) {
-              return DropdownMenuItem(
-                value: local,
-                child: Text(local),
-              );
-            }).toList(),
-            value: localSelecionado,
-            validator: (value) => value == null ? 'Campo obrigatório' : null,
-          ),
+        CampoDropDown(
+          hint: 'Local',
+          value: localSelecionado,
+          onChanged: onLocalChanged,
+          list: listaNomesPostos()
         ),
         Botao(
           titulo: 'Avançar',

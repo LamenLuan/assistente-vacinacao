@@ -18,8 +18,10 @@ class Cidadao {
     this.email,
   });
 
-  setAgendamento(Agendamento agendamento) {
-    this.agendamento = agendamento;
-    temAgendamento = true;
+  setAgendamento(Agendamento? agendamento) {
+    if(agendamento != null) {
+      this.agendamento = agendamento;
+      temAgendamento = true;
+    } else temAgendamento = false;
   } 
 }

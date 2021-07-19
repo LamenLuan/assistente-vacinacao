@@ -4,7 +4,7 @@ class PostoDeSaudeRepository {
   static List<PostoDeSaude> postos = [
     PostoDeSaude(
       nome: 'Unidade de Saúde Luiz Conrado Mansani',
-      endereco: 'Av. General Carlos Cavalcanti - Uvaranas,' +
+      endereco: 'Av. General Carlos Cavalcanti - Uvaranas, ' +
           'Ponta Grossa - PR, 84030-000',
       diasDisponiveis: ['27/08/2021', '29/08/2021', '30/08/2021'],
     ),

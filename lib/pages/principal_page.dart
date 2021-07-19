@@ -16,17 +16,22 @@ class _PrincipalPageState extends State<PrincipalPage> {
   void agendar() {
     Cidadao cidadao = widget.cidadao;
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => AgendamentoPagePt1(cidadao: cidadao)));
+    Navigator.push(context, MaterialPageRoute(
+      builder: (_) => AgendamentoPagePt1(cidadao: cidadao)
+    ));
+  }
+
+  void cancelarAgendamento() {
+    setState(() {
+      widget.cidadao.setAgendamento(null);
+    });
   }
 
   String? verificaAgendamento1(Cidadao cidadao) {
     if (cidadao.temAgendamento)
-      return 'Aplicação da ${cidadao.agendamento.dose}ª dose!';
+      return 'Agendada: Aplicação da ${cidadao.agendamento.dose}ª dose';
     else
-      return 'Você ainda não possui um agendamento';
+      return 'Você ainda não possui um agendamento 📅';
   }
 
   String? verificaAgendamento2(Cidadao cidadao) {
@@ -34,7 +39,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
       return '${cidadao.agendamento.posto.nome}\n\n' +
           'Endereço: ${cidadao.agendamento.posto.endereco}';
     else
-      return 'Marque um agendamento clicando no ícone de calendário abaixo';
+      return 'Marque um agendamento clicando no ícone de calendário abaixo 👇';
   }
 
   @override
@@ -68,7 +73,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
             [
               BotaoIcone(
                 titulo: 'Cancelar',
-                onPressed: () {},
+                onPressed: cancelarAgendamento,
                 icone: Icons.cancel_outlined,
               ),
               Padding(
@@ -85,7 +90,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: agendar,
-        child: Icon(Icons.calendar_today_rounded),
+        child: Icon(Icons.calendar_today_rounded)
       ),
     );
   }
