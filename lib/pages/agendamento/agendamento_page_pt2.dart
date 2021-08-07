@@ -4,6 +4,7 @@ import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
 import 'package:flutter/material.dart';
 
@@ -24,19 +25,27 @@ class AgendamentoPagePt2 extends StatefulWidget {
 }
 
 class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
-  String? diaSelecionado;
+  DiaVacinacao? diaSelecionado;
+  String? dataSelecionada;
   String? horarioSelecionado;
   final _formKey = GlobalKey<FormState>();
 
   void agendar() {
+    
     widget.cidadao.setAgendamento(
       Agendamento(
-        dia: diaSelecionado!,
-        horario: horarioSelecionado!,
+        data: diaSelecionado!.data,
+        horario: horarioSelecionado!.toString(),
         dose: 1,
         posto: widget.posto
       )
     );
+
+    diaSelecionado!.horarios.update(
+      horarioSelecionado!, (value) => --value
+    );
+
+    horarioSelecionado = null;
 
     for (var i = 0; i < 3; i++) Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(
@@ -77,9 +86,16 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
   }
 
   void onDiaChanged(String? value) {
-    setState(() {
-      diaSelecionado = value;
-    });
+    for (var dia in widget.posto.diasDisponiveis) {
+      if(dia.data == value) {
+        setState(() {
+          diaSelecionado = dia;
+          dataSelecionada = dia.data;
+          horarioSelecionado = null;
+        });
+        break;
+      }
+    }
   }
 
   void onHorarioChanged(String? value) {
@@ -89,21 +105,33 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
   }
 
   List<DropdownMenuItem<String>> listaDias() {
-    return widget.posto.diasDisponiveis.map((String dia) {
-      return DropdownMenuItem(
-        value: dia,
-        child: Text(dia),
-      );
-    }).toList();
+    List<DropdownMenuItem<String>> dias = [];
+
+    widget.posto.diasDisponiveis.forEach(
+      (element) => dias.add(DropdownMenuItem<String>(
+        value: element.data,
+        child: Text(element.data),
+      ))
+    );
+
+    return dias;
   }
 
   List<DropdownMenuItem<String>> listaHorarios() {
-    return widget.posto.horariosAgendamento!.map((String horario) {
-      return DropdownMenuItem(
-        value: horario,
-        child: Text(horario),
-      );
-    }).toList();
+    List<DropdownMenuItem<String>> horarios = [];
+
+    if (diaSelecionado != null) {
+      diaSelecionado!.horarios.forEach( (key, value) {
+        if(value > 0) {
+          horarios.add(DropdownMenuItem<String>(
+            value: key,
+            child: Text(key),
+          ));
+        }
+      });
+    }
+
+    return horarios;
   }
 
   @override
@@ -113,13 +141,13 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
       titulo: 'Parte 2 de 2',
       children: [
         Texto(
-          texto: 'Agora escolha o dia e um dos horários disponíveis ' +
+          texto: 'Agora escolha a data e um dos horários disponíveis ' +
             'para a vacinação',
           marginBottom: 24,
         ),
         CampoDropDown(
-          hint: 'Dia',
-          value: diaSelecionado,
+          hint: 'Data',
+          value: dataSelecionada,
           onChanged: onDiaChanged,
           list: listaDias(),
           marginBottom: 24,

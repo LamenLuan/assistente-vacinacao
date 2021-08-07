@@ -1,20 +1,27 @@
+import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
+
 class PostoDeSaude {
   String nome;
   String endereco;
-  List<String> diasDisponiveis;
-  List<String> horarios = [
-    'Manhã - 8h ~ 12h',
-    'Tarde - 12h ~ 16h',
-    'Noite - 16h ~ 20h',
-  ];
-
-  List<String>? get horariosAgendamento {
-    return horarios;
-  }
+  List<DiaVacinacao> diasDisponiveis;
 
   PostoDeSaude({
     required this.nome,
     required this.endereco,
     required this.diasDisponiveis,
   });
+
+  bool cancelaAgendamento(String data, String horarioEscolhido) {
+    for (var dia in diasDisponiveis) {
+      if(dia.data == data) {
+        for (var horario in dia.horarios.keys) {
+          if(horario == horarioEscolhido) {
+            dia.horarios.update(horario, (value) => ++value);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 }

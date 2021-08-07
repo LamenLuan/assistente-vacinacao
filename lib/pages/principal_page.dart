@@ -1,6 +1,8 @@
 import 'package:assistente_vacinacao/components/botao_com_icone.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
+import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
 import 'package:assistente_vacinacao/pages/agendamento/agendamento_page_pt1.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +34,11 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ),
         TextButton(
           onPressed: () {
+            Agendamento agendamento = widget.cidadao.agendamento;
+
+            agendamento.posto.cancelaAgendamento(
+              agendamento.data, agendamento.horario
+            );
             setState(() {
               widget.cidadao.setAgendamento(null);
             });
@@ -61,7 +68,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   String? dataHora(Cidadao cidadao) {
     if (cidadao.temAgendamento)
-      return '${cidadao.agendamento.dia} - ${cidadao.agendamento.horario}';
+      return '${cidadao.agendamento.data} - ${cidadao.agendamento.horario}';
     else return '';
   }
 
