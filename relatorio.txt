@@ -8,3 +8,11 @@ Tela de chat, tela de rotas do maps, alerts de cancelamento de agendamento.
 Atividades realizadas:
 Luan Leme -> Tela de login, telas de cadastro de usuário.
 Gabriel Rufino -> Tela principal, telas de agendamento.
+
+Para testar o acesso sem precisar realizar um cadastro:
+CPF: 111.111.111-11
+Senha: 123456
+
+Instalação e configuração:
+- Executar no terminal o comando "flutter pub get";
+- Executar no terminal o comando "flutter run";
