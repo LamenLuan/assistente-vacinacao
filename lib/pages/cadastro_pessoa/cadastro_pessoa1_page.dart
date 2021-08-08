@@ -25,6 +25,7 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
     dataNascimento: DateTime(2000),
     isMasculino: true,
     comorbidade: false,
+    email: '',
     telefone: ''
   );
 

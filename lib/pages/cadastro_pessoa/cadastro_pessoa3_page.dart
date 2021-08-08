@@ -49,8 +49,8 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
   }
 
   String? emailValidator(String? value) {
-    if(value!.isNotEmpty && !_validadorEmail.hasMatch(value) )
-      return 'Email incompleto';
+    if(value!.isEmpty) return 'Informe o email';
+    if(!_validadorEmail.hasMatch(value)) return 'Email inválido';
   }
 
   @override
@@ -61,17 +61,17 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
       children: [
         Texto(texto:'Agora suas informações de contato'),
         CampoEntrada(
+          titulo: 'Email',
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          validator: emailValidator
+        ),
+        CampoEntrada(
           titulo: 'Telefone',
           controller: _telefoneController,
           keyboardType: TextInputType.phone,
           inputFormatters: [_telefoneFormatter],
           validator: telefoneValidator
-        ),
-        CampoEntrada(
-          titulo: 'Email (Opcional)',
-          controller: _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: emailValidator
         ),
         Botao(
           titulo: 'Avançar',

@@ -1,8 +1,7 @@
 import 'package:assistente_vacinacao/models/agendamento.dart';
 
 class Cidadao {
-  String cpf, senha, nome, telefone;
-  String? email;
+  String cpf, senha, nome, email, telefone;
   DateTime dataNascimento;
   bool isMasculino, comorbidade, temAgendamento = false;
   late Agendamento agendamento;
@@ -14,8 +13,8 @@ class Cidadao {
     required this.dataNascimento,
     required this.isMasculino,
     required this.comorbidade,
+    required this.email,
     required this.telefone,
-    this.email,
   });
 
   setAgendamento(Agendamento? agendamento) {
