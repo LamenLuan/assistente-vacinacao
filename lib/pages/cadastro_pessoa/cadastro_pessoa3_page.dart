@@ -2,7 +2,7 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -10,9 +10,9 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'cadastro_pessoa4_page.dart';
 
 class CadastroPessoa3Page extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario usuario;
   
-  CadastroPessoa3Page({Key? key, required this.cidadao}) : super(key: key);
+  CadastroPessoa3Page({Key? key, required this.usuario}) : super(key: key);
 
   @override
   _CadastroPessoa3PageState createState() => _CadastroPessoa3PageState();
@@ -32,13 +32,14 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
 
   void prosseguir() {
     if( _formKey.currentState!.validate() ) {
-      Cidadao cidadao = widget.cidadao;
-      cidadao.telefone = _telefoneController.text;
-      if(_emailController.text.isNotEmpty)
-        cidadao.email = _emailController.text;
+      Usuario usuario = widget.usuario;
+      usuario.telefone = _telefoneController.text;
 
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa4Page(cidadao: widget.cidadao)
+        builder: (_) => CadastroPessoa4Page(
+          usuario: widget.usuario,
+          email: _emailController.text,
+        )
       ));
     }
   }

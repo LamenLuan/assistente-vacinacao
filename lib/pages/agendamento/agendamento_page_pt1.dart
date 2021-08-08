@@ -2,14 +2,14 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
 import 'package:assistente_vacinacao/pages/agendamento/agendamento_page_pt2.dart';
 import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:flutter/material.dart';
 
 class AgendamentoPagePt1 extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario cidadao;
 
   AgendamentoPagePt1({Key? key, required this.cidadao}) : super(key: key);
 

@@ -3,15 +3,13 @@ import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
 import 'package:flutter/material.dart';
 
-import '../slider_page_controller.dart';
-
 class AgendamentoPagePt2 extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario cidadao;
   final PostoDeSaude posto;
 
   AgendamentoPagePt2({
@@ -48,9 +46,9 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
     horarioSelecionado = null;
 
     for (var i = 0; i < 3; i++) Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(
-      builder: (_) => SliderPage()
-    ));
+    // Navigator.push(context, MaterialPageRoute(
+    //   builder: (_) => SliderPage()
+    // ));
 
     FocusScope.of(context).requestFocus(new FocusNode());
 

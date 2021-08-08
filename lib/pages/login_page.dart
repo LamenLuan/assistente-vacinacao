@@ -3,6 +3,7 @@ import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/pages/cadastro_pessoa/cadastro_pessoa1_page.dart';
+import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
         await Provider.of<AuthService>(context, listen: false).login(
           _emailController.text, _senhaController.text
         );
+        await Provider.of<UsuariosRepository>(
+          context, listen: false
+        ).getUsuarioAutenticado();
       } on AuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar( content: Text(e.message) )

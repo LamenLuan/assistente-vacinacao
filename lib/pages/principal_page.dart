@@ -1,9 +1,8 @@
 import 'package:assistente_vacinacao/components/botao_com_icone.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
-import 'package:assistente_vacinacao/pages/agendamento/agendamento_page_pt1.dart';
-import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
+import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,12 +15,13 @@ class PrincipalPage extends StatefulWidget {
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
-  late Cidadao cidadao;
+
+  Usuario? usuario;
 
   void agendar() {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (_) => AgendamentoPagePt1(cidadao: cidadao)
-    ));
+    // Navigator.push(context, MaterialPageRoute(
+    //   builder: (_) => AgendamentoPagePt1(usuario: usuario)
+    // ));
   }
 
   void cancelarAgendamento() {
@@ -35,13 +35,13 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ),
         TextButton(
           onPressed: () {
-            Agendamento agendamento = cidadao.agendamento;
+            Agendamento agendamento = usuario!.agendamento;
 
             agendamento.posto.cancelaAgendamento(
               agendamento.data, agendamento.horario
             );
             setState(() {
-              cidadao.setAgendamento(null);
+              usuario!.setAgendamento(null);
             });
             Navigator.pop(context);
           },
@@ -52,35 +52,31 @@ class _PrincipalPageState extends State<PrincipalPage> {
     showDialog(context: context, builder: (context) => confirmacao);
   }
 
-  String? agendamento(Cidadao cidadao) {
-    if (cidadao.temAgendamento)
-      return 'Agendada: Aplicação da ${cidadao.agendamento.dose}ª dose';
+  String? agendamento(Usuario usuario) {
+    if (usuario.temAgendamento)
+      return 'Agendada: Aplicação da ${usuario.agendamento.dose}ª dose';
     else
       return 'Você ainda não possui um agendamento 📅';
   }
 
-  String? postoEndereco(Cidadao cidadao) {
-    if (cidadao.temAgendamento)
-      return '${cidadao.agendamento.posto.nome}\n\n' +
-          '${cidadao.agendamento.posto.endereco}';
+  String? postoEndereco(Usuario usuario) {
+    if (usuario.temAgendamento)
+      return '${usuario.agendamento.posto.nome}\n\n' +
+          '${usuario.agendamento.posto.endereco}';
     else
       return 'Marque um agendamento clicando no ícone de calendário abaixo 👇';
   }
 
-  String? dataHora(Cidadao cidadao) {
-    if (cidadao.temAgendamento)
-      return '${cidadao.agendamento.data} - ${cidadao.agendamento.horario}';
+  String? dataHora(Usuario usuario) {
+    if (usuario.temAgendamento)
+      return '${usuario.agendamento.data} - ${usuario.agendamento.horario}';
     else return '';
   }
 
   @override
   Widget build(BuildContext context) {
-    String? email = Provider.of<AuthService>(context).getEmailUsuario();
-    try {
-      cidadao = CidadaoRepository.findCidadaoEmail(email!)!;
-    } catch (e) {
-      Provider.of<AuthService>(context, listen: false).logout();
-    }
+
+    usuario = Provider.of<UsuariosRepository>(context).autenticado;
 
     return Scaffold(
       appBar: AppBar(
@@ -95,30 +91,30 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
       body: ListView(
         padding: const EdgeInsets.all(8),
-        children: [
+        children: (usuario != null) ? [
           Texto(
-            texto: 'Bem vindo ${cidadao.nome}!',
+            texto: 'Bem vindo ${usuario!.nome}!',
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: agendamento(cidadao)!,
+            texto: agendamento(usuario!)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: postoEndereco(cidadao)!,
+            texto: postoEndereco(usuario!)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: dataHora(cidadao)!,
+            texto: dataHora(usuario!)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: (cidadao.temAgendamento) ?
+            children: (usuario!.temAgendamento) ?
             [
               BotaoIcone(
                 titulo: 'Cancelar',
@@ -135,7 +131,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
               ),
             ] : [],
           )
-        ],
+        ] : [],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: agendar,
