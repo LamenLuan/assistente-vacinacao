@@ -27,7 +27,7 @@ class _CadastroPessoa3PageState extends State<CadastroPessoa3Page> {
     mask: '(##) #####-####', filter: { "#": RegExp(r'[0-9]') }
   );
   final _validadorEmail = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+(\.[a-zA-Z]+)+$"
   );
 
   void prosseguir() {

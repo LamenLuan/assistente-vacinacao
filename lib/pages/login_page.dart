@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _validadorEmail = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+(\.[a-zA-Z]+)+$"
   );
 
   mostraSnackBar(String mensagem) {
@@ -58,8 +58,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   String? emailValidator(String? value) {
-    if(value!.isEmpty) return 'Informe o Email';
-    if( !_validadorEmail.hasMatch(value) ) return 'Email incompleto';
+    if(value!.isEmpty) return 'Informe o email';
+    if( !_validadorEmail.hasMatch(value) ) return 'Email inválido';
   }
 
   String? senhaValidator(String? value) {
