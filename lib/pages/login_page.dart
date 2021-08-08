@@ -2,14 +2,11 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/pages/cadastro_pessoa/cadastro_pessoa1_page.dart';
-import 'package:assistente_vacinacao/pages/slider_page_controller.dart';
-import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
+import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -20,30 +17,35 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  final _cpfController = TextEditingController();
+  final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final _cpfFormatter = MaskTextInputFormatter(
-    mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') }
+  final _validadorEmail = RegExp(
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
   );
 
-  Cidadao? encontrado;
+  mostraSnackBar(String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar( content: Text(mensagem) )
+    );
+  }
 
-  void fazerLogin() {
+  void fazerLogin() async {
+    FocusScope.of(context).requestFocus( new FocusNode() );
     if( _formKey.currentState!.validate() ) {
-      Cidadao cidadao = encontrado!;
-      
-      FocusScope.of(context).requestFocus(new FocusNode());
-      limparCampos();
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => SliderPage(cidadao: cidadao)
-      ));
+      try {
+        await Provider.of<AuthService>(context, listen: false).login(
+          _emailController.text, _senhaController.text
+        );
+      } on AuthException catch (e) {
+        mostraSnackBar(e.message);
+      }
     }
   }
 
   void cadastrar() {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus( new FocusNode() );
     limparCampos();
     Navigator.push(context, MaterialPageRoute(
       builder: (_) => CadastroPessoa1Page()
@@ -51,22 +53,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void limparCampos() {
-    _cpfController.clear();
+    _emailController.clear();
     _senhaController.clear();
   }
 
-  String? cpfValidator(String? value) {
-    if(value!.isEmpty) return 'Informe o CPF';
-    if( !_cpfFormatter.isFill() ) return 'CPF incompleto';
+  String? emailValidator(String? value) {
+    if(value!.isEmpty) return 'Informe o Email';
+    if( !_validadorEmail.hasMatch(value) ) return 'Email incompleto';
   }
 
   String? senhaValidator(String? value) {
     if(value!.isEmpty) return 'Informe a senha';
     if(value.length < 6) return 'A senha contém pelo menos 6 dígitos';
-
-    encontrado = CidadaoRepository.findCidadao(_cpfController.text);
-    if(encontrado == null || encontrado!.senha != value)
-      return 'Dados incorretos, verifique CPF e senha';
   }
   
   @override
@@ -77,13 +75,11 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Texto(texto: 'Seja bem vindo ao seu assistente de vacinação!'),
         CampoEntrada(
-          titulo: 'CPF',
-          controller: _cpfController,
-          enableSuggestions: false,
-          autocorrect: false,
-          keyboardType: TextInputType.number,
-          inputFormatters: [_cpfFormatter],
-          validator: cpfValidator
+          titulo: 'Email',
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          validator: emailValidator,
+          maxLength: 100
         ),
         CampoEntrada(
           titulo: 'Senha',
@@ -92,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
           enableSuggestions: false,
           autocorrect: false,
           validator: senhaValidator,
+          maxLength: 24
         ),
         Botao(
           titulo: 'Entrar',

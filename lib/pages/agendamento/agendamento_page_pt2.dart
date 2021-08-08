@@ -49,7 +49,7 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
 
     for (var i = 0; i < 3; i++) Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => SliderPage(cidadao: widget.cidadao)
+      builder: (_) => SliderPage()
     ));
 
     FocusScope.of(context).requestFocus(new FocusNode());

@@ -5,19 +5,19 @@ class CidadaoRepository {
     Cidadao(
       cpf: '111.111.111-11',
       senha: '123456',
-      nome: 'Usuário',
+      nome: 'Fulano',
       dataNascimento: DateTime(1,1,2001),
       isMasculino: true,
       comorbidade: false,
       telefone: '',
-      email: ''
+      email: 'fulano@gmail.com'
     )
   ];
 
-  static Cidadao? findCidadao(String cpf)
+  static Cidadao? findCidadao(String email)
   {
     for (var cidadao in cidadaos) {
-      if(cidadao.cpf == cpf) return cidadao;
+      if(cidadao.email == email) return cidadao;
     }
   }
 }

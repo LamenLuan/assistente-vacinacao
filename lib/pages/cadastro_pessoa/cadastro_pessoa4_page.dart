@@ -60,14 +60,16 @@ class _CadastroPessoa4PageState extends State<CadastroPessoa4Page> {
           enableSuggestions: false,
           autocorrect: false,
           controller: _senhaController,
-          validator: senhaValidator
+          validator: senhaValidator,
+          maxLength: 24
         ),
         CampoEntrada(
           titulo: 'Confirmar sua senha',
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
-          validator: confirmacaoSenhaValidator
+          validator: confirmacaoSenhaValidator,
+          maxLength: 24
         ),
         Botao(
           titulo: 'Concluir',

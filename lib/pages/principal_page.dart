@@ -2,22 +2,23 @@ import 'package:assistente_vacinacao/components/botao_com_icone.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/cidadao.dart';
-import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
 import 'package:assistente_vacinacao/pages/agendamento/agendamento_page_pt1.dart';
+import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
+import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PrincipalPage extends StatefulWidget {
-  final Cidadao cidadao;
-  PrincipalPage({Key? key, required this.cidadao}) : super(key: key);
+  PrincipalPage({Key? key}) : super(key: key);
 
   @override
   _PrincipalPageState createState() => _PrincipalPageState();
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
-  void agendar() {
-    Cidadao cidadao = widget.cidadao;
+  late Cidadao cidadao;
 
+  void agendar() {
     Navigator.push(context, MaterialPageRoute(
       builder: (_) => AgendamentoPagePt1(cidadao: cidadao)
     ));
@@ -34,13 +35,13 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ),
         TextButton(
           onPressed: () {
-            Agendamento agendamento = widget.cidadao.agendamento;
+            Agendamento agendamento = cidadao.agendamento;
 
             agendamento.posto.cancelaAgendamento(
               agendamento.data, agendamento.horario
             );
             setState(() {
-              widget.cidadao.setAgendamento(null);
+              cidadao.setAgendamento(null);
             });
             Navigator.pop(context);
           },
@@ -74,37 +75,46 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
+    String? email = Provider.of<AuthService>(context).getEmailUsuario();
+    cidadao = CidadaoRepository.findCidadao(email!)!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Assistente de Vacinação'),
-        centerTitle: true
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.logout),
+          onPressed: () async => await Provider.of<AuthService>(
+            context, listen: false
+          ).logout()
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: [
           Texto(
-            texto: 'Bem vindo ${widget.cidadao.nome}!',
+            texto: 'Bem vindo ${cidadao.nome}!',
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: agendamento(widget.cidadao)!,
+            texto: agendamento(cidadao)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: postoEndereco(widget.cidadao)!,
+            texto: postoEndereco(cidadao)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Texto(
-            texto: dataHora(widget.cidadao)!,
+            texto: dataHora(cidadao)!,
             marginTop: 20,
             marginBottom: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: (widget.cidadao.temAgendamento) ?
+            children: (cidadao.temAgendamento) ?
             [
               BotaoIcone(
                 titulo: 'Cancelar',
