@@ -76,7 +76,11 @@ class _PrincipalPageState extends State<PrincipalPage> {
   @override
   Widget build(BuildContext context) {
     String? email = Provider.of<AuthService>(context).getEmailUsuario();
-    cidadao = CidadaoRepository.findCidadao(email!)!;
+    try {
+      cidadao = CidadaoRepository.findCidadaoEmail(email!)!;
+    } catch (e) {
+      Provider.of<AuthService>(context, listen: false).logout();
+    }
 
     return Scaffold(
       appBar: AppBar(

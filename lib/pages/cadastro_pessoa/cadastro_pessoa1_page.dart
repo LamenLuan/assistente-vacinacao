@@ -55,7 +55,7 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
   String? cpfValidator(String? value) {
     if(value!.isEmpty) return 'Informe o CPF';
     if( !_cpfFormatter.isFill() ) return 'CPF incompleto';
-    if(CidadaoRepository.findCidadao(_cpfController.text) != null)
+    if(CidadaoRepository.findCidadaoCPF(_cpfController.text) != null)
       return 'CPF já cadastrado';
   }
 

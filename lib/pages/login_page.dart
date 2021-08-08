@@ -39,7 +39,9 @@ class _LoginPageState extends State<LoginPage> {
           _emailController.text, _senhaController.text
         );
       } on AuthException catch (e) {
-        mostraSnackBar(e.message);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar( content: Text(e.message) )
+        );
       }
     }
   }

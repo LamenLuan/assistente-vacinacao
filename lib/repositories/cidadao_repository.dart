@@ -14,10 +14,17 @@ class CidadaoRepository {
     )
   ];
 
-  static Cidadao? findCidadao(String email)
+  static Cidadao? findCidadaoEmail(String email)
   {
     for (var cidadao in cidadaos) {
       if(cidadao.email == email) return cidadao;
+    }
+  }
+
+  static Cidadao? findCidadaoCPF(String cpf)
+  {
+    for (var cidadao in cidadaos) {
+      if(cidadao.cpf == cpf) return cidadao;
     }
   }
 }
