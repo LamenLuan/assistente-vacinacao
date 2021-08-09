@@ -84,6 +84,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
   Widget build(BuildContext context) {
 
     usuario = Provider.of<UsuariosRepository>(context).autenticado;
+    Provider.of<PostoDeSaudeRepository>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
