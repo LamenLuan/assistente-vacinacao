@@ -2,10 +2,13 @@ import 'package:assistente_vacinacao/components/botao_com_icone.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/usuario.dart';
+import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'agendamento/agendamento_page_pt1.dart';
 
 class PrincipalPage extends StatefulWidget {
   PrincipalPage({Key? key}) : super(key: key);
@@ -19,9 +22,12 @@ class _PrincipalPageState extends State<PrincipalPage> {
   Usuario? usuario;
 
   void agendar() {
-    // Navigator.push(context, MaterialPageRoute(
-    //   builder: (_) => AgendamentoPagePt1(usuario: usuario)
-    // ));
+    if(usuario != null) {
+      Usuario usuario = this.usuario!;
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => AgendamentoPagePt1(usuario: usuario)
+      ));
+    }
   }
 
   void cancelarAgendamento() {
@@ -37,9 +43,10 @@ class _PrincipalPageState extends State<PrincipalPage> {
           onPressed: () {
             Agendamento agendamento = usuario!.agendamento;
 
-            agendamento.posto.cancelaAgendamento(
-              agendamento.data, agendamento.horario
-            );
+            PostoDeSaudeRepository.findPosto(
+              agendamento.nomePosto
+            )!.cancelaAgendamento(agendamento.data);
+
             setState(() {
               usuario!.setAgendamento(null);
             });
@@ -61,15 +68,14 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   String? postoEndereco(Usuario usuario) {
     if (usuario.temAgendamento)
-      return '${usuario.agendamento.posto.nome}\n\n' +
-          '${usuario.agendamento.posto.endereco}';
+      return '${usuario.agendamento.nomePosto}\n\n' +
+          '${usuario.agendamento.endereco}';
     else
       return 'Marque um agendamento clicando no ícone de calendário abaixo 👇';
   }
 
-  String? dataHora(Usuario usuario) {
-    if (usuario.temAgendamento)
-      return '${usuario.agendamento.data} - ${usuario.agendamento.horario}';
+  String? data(Usuario usuario) {
+    if (usuario.temAgendamento) return '${usuario.agendamento.data}';
     else return '';
   }
 
@@ -108,7 +114,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
             marginBottom: 20,
           ),
           Texto(
-            texto: dataHora(usuario!)!,
+            texto: data(usuario!)!,
             marginTop: 20,
             marginBottom: 20,
           ),

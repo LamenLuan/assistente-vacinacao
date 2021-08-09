@@ -1,4 +1,5 @@
 import 'package:assistente_vacinacao/components/autenticador.dart';
+import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider( create: (context) => AuthService() ),
+        ChangeNotifierProvider( create: (context) => PostoDeSaudeRepository() ),
         ChangeNotifierProvider(
           create: (context) => UsuariosRepository(
             authService: Provider.of<AuthService>(context, listen: false)

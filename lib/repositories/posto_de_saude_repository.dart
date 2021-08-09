@@ -1,104 +1,51 @@
-import 'package:assistente_vacinacao/models/dia_vacinacao.dart';
+import 'package:assistente_vacinacao/database/db_firestore.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
-class PostoDeSaudeRepository {
-  static List<PostoDeSaude> postos = [
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Luiz Conrado Mansani',
-      endereco: 'Av. General Carlos Cavalcanti - Uvaranas, ' +
-          'Ponta Grossa - PR, 84030-000',
-      diasDisponiveis: [
-        DiaVacinacao(
-          data: '30/08/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 1,
-            'Tarde (13h - 16h)': 20,
-            'Noite (16h - 20h)': 10,
-          }
-        ),
-        DiaVacinacao(
-          data: '01/09/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 40,
-            'Tarde (13h - 16h)': 40,
-            'Noite (16h - 20h)': 30,
-          }
+class PostoDeSaudeRepository extends ChangeNotifier {
+  static List<PostoDeSaude> postos = [];
+  late FirebaseFirestore db;
+
+  _startFirestore() {
+    db = DBFirestore.get();
+  }
+
+  _readPostos() async {
+    final snapshot = await db.collection('postos').get();
+    snapshot.docs.forEach((doc) {
+      postos.add(
+        PostoDeSaude(
+          diasDisponiveis: doc.get('diasDisponiveis'),
+          endereco: doc.get('endereco'),
+          nome: doc.get('nome'),
         )
-      ],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Silas Sallen',
-      endereco: 'Rua Rodrigo Silva - Uvaranas - ' +
-          ' Vila Claudionora, Ponta Grossa - PR, 84030-040',
-      diasDisponiveis: [
-        DiaVacinacao(
-          data: '30/08/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 20,
-            'Tarde (13h - 16h)': 20,
-            'Noite (16h - 20h)': 10,
-          }
-        ),
-        DiaVacinacao(
-          data: '01/09/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 40,
-            'Tarde (13h - 16h)': 40,
-            'Noite (16h - 20h)': 30,
-          }
-        )
-      ],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Antonio Saliba',
-      endereco: 'R. Siqueira Campos, 753 - Parque Sabiá, ' +
-          'Ponta Grossa - PR, 84031-030',
-      diasDisponiveis: [
-        DiaVacinacao(
-          data: '30/08/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 20,
-            'Tarde (13h - 16h)': 20,
-            'Noite (16h - 20h)': 10,
-          }
-        ),
-        DiaVacinacao(
-          data: '01/09/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 40,
-            'Tarde (13h - 16h)': 40,
-            'Noite (16h - 20h)': 30,
-          }
-        )
-      ],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Madre Josefa',
-      endereco: 'R. Bituruna - Coronel Cláudio, Ponta Grossa - PR, 84025-490',
-      diasDisponiveis: [
-        DiaVacinacao(
-          data: '30/08/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 20,
-            'Tarde (13h - 16h)': 20,
-            'Noite (16h - 20h)': 10,
-          }
-        ),
-        DiaVacinacao(
-          data: '01/09/2021',
-          horarios: {
-            'Manhã (8h - 12h)': 40,
-            'Tarde (13h - 16h)': 40,
-            'Noite (16h - 20h)': 30,
-          }
-        )
-      ],
-    )
-  ];
+      );
+    });
+    notifyListeners();
+  }
+
+  _starRepository() async {
+    await _startFirestore();
+    await _readPostos();
+  }
+
+  PostoDeSaudeRepository() {
+    _starRepository();
+  }
 
   static PostoDeSaude? findPosto(String nome) {
     for (var posto in postos) {
       if (posto.nome == nome) return posto;
     }
+  }
+
+  cancelaAgendamento(String posto, String data) async {
+    PostoDeSaude p = findPosto(posto)!;
+    p.cancelaAgendamento(data);
+    await db.collection('postos').doc(posto).set({
+      'diasDisponiveis': p.diasDisponiveis
+    });
+    notifyListeners();
   }
 }

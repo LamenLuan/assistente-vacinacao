@@ -1,4 +1,5 @@
 import 'package:assistente_vacinacao/database/db_firestore.dart';
+import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -85,6 +86,19 @@ class UsuariosRepository extends ChangeNotifier {
     );
 
     autenticado = usuario;
+    notifyListeners();
+  }
+
+  saveAgendamento(Agendamento agendamento) async {
+    ////////////////////////////////////////////////////////////////////////////
+    await db.collection('agendamentos').doc(authService.usuario!.uid).set({
+      'agendamento': agendamento
+    });
+    await db.collection('usuarios').doc(authService.usuario!.uid).set({
+      'agendamento': agendamento
+    });
+    ////////////////////////////////////////////////////////////////////////////
+    autenticado!.setAgendamento(agendamento);
     notifyListeners();
   }
 
