@@ -39,6 +39,9 @@ class _BotaoIconeState extends State<BotaoIcone> {
             Icon(widget.icone),
           ],
         ),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.teal[400]
+        )
       ),
     );
   }

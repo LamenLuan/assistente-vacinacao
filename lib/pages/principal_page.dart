@@ -142,7 +142,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: agendar,
-        child: Icon(Icons.calendar_today_rounded)
+        child: Icon(Icons.calendar_today_rounded),
+        backgroundColor: Colors.teal[400]
       ),
     );
   }

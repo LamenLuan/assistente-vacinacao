@@ -57,6 +57,7 @@ class _SliderPageState extends State<SliderPage> {
           );
         },
         backgroundColor: Colors.grey[200],
+        selectedItemColor: Colors.teal[400]
       ),
     );
   }

@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate
       ],
+      theme: ThemeData(
+        primaryColor: Colors.teal[400]
+      ),
       supportedLocales: [
         const Locale('en'),
         const Locale('pt')
