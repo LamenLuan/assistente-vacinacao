@@ -8,8 +8,4 @@ class PostoDeSaude {
     required this.endereco,
     required this.diasDisponiveis,
   });
-
-  cancelaAgendamento(String data) {
-    diasDisponiveis.update(data, (value) => ++value);
-  }
 }

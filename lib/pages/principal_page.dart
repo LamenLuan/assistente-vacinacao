@@ -42,14 +42,15 @@ class _PrincipalPageState extends State<PrincipalPage> {
         TextButton(
           onPressed: () {
             Agendamento agendamento = usuario!.agendamento;
+            // Removo o agendamento do banco
+            Provider.of<UsuariosRepository>(
+              context, listen: false
+            ).cancelaAgendamento();
+            // Devolvo a dose no posto, tanto em memoria quanto em banco
+            Provider.of<PostoDeSaudeRepository>(
+              context, listen: false
+            ).devolveDose(agendamento.nomePosto, agendamento.data);
 
-            PostoDeSaudeRepository.findPosto(
-              agendamento.nomePosto
-            )!.cancelaAgendamento(agendamento.data);
-
-            setState(() {
-              usuario!.setAgendamento(null);
-            });
             Navigator.pop(context);
           },
           child: Text('SIM'),

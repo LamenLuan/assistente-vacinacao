@@ -85,20 +85,41 @@ class UsuariosRepository extends ChangeNotifier {
       }
     );
 
+    final agendamento = await db.collection('agendamentos').doc(
+      authService.usuario!.uid
+    ).get();
+
+    if(agendamento.exists) usuario.setAgendamento(
+      Agendamento(
+        data: agendamento.get('data'),
+        dose: agendamento.get('dose'),
+        nomePosto: agendamento.get('nomePosto'),
+        endereco: agendamento.get('endereco')
+      )
+    );
+
     autenticado = usuario;
     notifyListeners();
   }
 
-  saveAgendamento(Agendamento agendamento) async {
-    ////////////////////////////////////////////////////////////////////////////
-    await db.collection('agendamentos').doc(authService.usuario!.uid).set({
-      'agendamento': agendamento
+  cancelaAgendamento() async {
+    await db.collection('agendamentos').doc(
+      authService.usuario!.uid
+    ).delete();
+    autenticado!.setAgendamento(null);
+    notifyListeners();
+  }
+
+  saveAgendamento(Agendamento novoAgendamento) async {
+    await db.collection('agendamentos').doc(
+      authService.usuario!.uid
+    ).set({
+      'data': novoAgendamento.data,
+      'dose': novoAgendamento.dose,
+      'nomePosto': novoAgendamento.nomePosto,
+      'endereco': novoAgendamento.endereco
     });
-    await db.collection('usuarios').doc(authService.usuario!.uid).set({
-      'agendamento': agendamento
-    });
-    ////////////////////////////////////////////////////////////////////////////
-    autenticado!.setAgendamento(agendamento);
+    autenticado!.setAgendamento(novoAgendamento);
     notifyListeners();
   }
 

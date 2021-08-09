@@ -40,10 +40,10 @@ class PostoDeSaudeRepository extends ChangeNotifier {
     }
   }
 
-  cancelaAgendamento(String posto, String data) async {
+  devolveDose(String posto, String data) async {
     PostoDeSaude p = findPosto(posto)!;
-    p.cancelaAgendamento(data);
-    await db.collection('postos').doc(posto).set({
+    p.diasDisponiveis.update(data, (value) => ++value);
+    await db.collection('postos').doc(posto).update({
       'diasDisponiveis': p.diasDisponiveis
     });
     notifyListeners();

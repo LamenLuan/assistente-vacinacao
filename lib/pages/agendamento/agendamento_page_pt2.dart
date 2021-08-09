@@ -5,6 +5,7 @@ import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
+import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,25 +30,54 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
 
   void agendar() async {
     
+    String nomePosto = widget.posto.nome;
+    String data = dataSelecionada!;
+
+    // Insiro o agendamento no banco
     await Provider.of<UsuariosRepository>(
           context, listen: false
     ).saveAgendamento(Agendamento(
-        data: dataSelecionada!,
+        data: data,
         dose: 1,
         endereco: widget.posto.endereco,
-        nomePosto: widget.posto.nome
+        nomePosto: nomePosto
     ));
+    // Acho o posto na memoria
+    PostoDeSaude p = PostoDeSaudeRepository.findPosto(nomePosto)!;
+    // Diminuo a quantidade de doses disponiveis daquele dia
+    p.diasDisponiveis.update(data, (value) => --value);
+    // Carrego no posto do banco o map de dias disponiveis
+    Provider.of<PostoDeSaudeRepository>(context, listen: false).db.collection(
+      'postos'
+    ).doc(nomePosto).update({
+      'diasDisponiveis': p.diasDisponiveis
+    });
+    // Anulando o valor pra evitar excecao
+    dataSelecionada = null;
 
     for (var i = 0; i < 2; i++) Navigator.pop(context);
-    // Navigator.push(context, MaterialPageRoute(
-    //   builder: (_) => SliderPage()
-    // ));
 
     FocusScope.of(context).requestFocus(new FocusNode());
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Agendamento realizado com sucesso!'))
     );
+  }
+
+  void reagendar() async {
+    String nomePosto = widget.usuario.agendamento.nomePosto;
+    String data = widget.usuario.agendamento.data;
+
+    // Removo o agendamento do banco
+    Provider.of<UsuariosRepository>(
+      context, listen: false
+    ).cancelaAgendamento();
+    // Devolvo a dose no posto, tanto em memoria quanto em banco
+    Provider.of<PostoDeSaudeRepository>(
+      context, listen: false
+    ).devolveDose(nomePosto, data);
+
+    agendar();
   }
 
   void confirmar() {
@@ -63,7 +93,7 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
             ),
             TextButton(
               onPressed: () {
-                agendar();
+                reagendar();
                 Navigator.pop(context);
               },
               child: Text('SIM'),
