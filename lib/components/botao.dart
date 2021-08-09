@@ -38,6 +38,9 @@ class _BotaoState extends State<Botao> {
             )
           ],
         ),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.teal[400]
+        ),
       ),
     );
   }

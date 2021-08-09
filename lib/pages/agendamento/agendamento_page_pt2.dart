@@ -3,19 +3,20 @@ import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
+import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
+import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:flutter/material.dart';
-
-import '../slider_page_controller.dart';
+import 'package:provider/provider.dart';
 
 class AgendamentoPagePt2 extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario usuario;
   final PostoDeSaude posto;
 
   AgendamentoPagePt2({
     Key? key,
-    required this.cidadao,
+    required this.usuario,
     required this.posto,
   }) : super(key: key);
 
@@ -24,24 +25,37 @@ class AgendamentoPagePt2 extends StatefulWidget {
 }
 
 class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
-  String? diaSelecionado;
-  String? horarioSelecionado;
+  String? dataSelecionada;
   final _formKey = GlobalKey<FormState>();
 
-  void agendar() {
-    widget.cidadao.setAgendamento(
-      Agendamento(
-        dia: diaSelecionado!,
-        horario: horarioSelecionado!,
-        dose: 1,
-        posto: widget.posto
-      )
-    );
+  void agendar() async {
+    
+    String nomePosto = widget.posto.nome;
+    String data = dataSelecionada!;
 
-    for (var i = 0; i < 3; i++) Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(
-      builder: (_) => SliderPage(cidadao: widget.cidadao)
+    // Insiro o agendamento no banco
+    await Provider.of<UsuariosRepository>(
+          context, listen: false
+    ).saveAgendamento(Agendamento(
+        data: data,
+        dose: 1,
+        endereco: widget.posto.endereco,
+        nomePosto: nomePosto
     ));
+    // Acho o posto na memoria
+    PostoDeSaude p = PostoDeSaudeRepository.findPosto(nomePosto)!;
+    // Diminuo a quantidade de doses disponiveis daquele dia
+    p.diasDisponiveis.update(data, (value) => --value);
+    // Carrego no posto do banco o map de dias disponiveis
+    Provider.of<PostoDeSaudeRepository>(context, listen: false).db.collection(
+      'postos'
+    ).doc(nomePosto).update({
+      'diasDisponiveis': p.diasDisponiveis
+    });
+    // Anulando o valor pra evitar excecao
+    dataSelecionada = null;
+
+    for (var i = 0; i < 2; i++) Navigator.pop(context);
 
     FocusScope.of(context).requestFocus(new FocusNode());
 
@@ -50,9 +64,25 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
     );
   }
 
+  void reagendar() async {
+    String nomePosto = widget.usuario.agendamento.nomePosto;
+    String data = widget.usuario.agendamento.data;
+
+    // Removo o agendamento do banco
+    Provider.of<UsuariosRepository>(
+      context, listen: false
+    ).cancelaAgendamento();
+    // Devolvo a dose no posto, tanto em memoria quanto em banco
+    Provider.of<PostoDeSaudeRepository>(
+      context, listen: false
+    ).devolveDose(nomePosto, data);
+
+    agendar();
+  }
+
   void confirmar() {
     if ( _formKey.currentState!.validate() ) {
-      if (widget.cidadao.temAgendamento) {
+      if (widget.usuario.temAgendamento) {
         AlertDialog confirmacao = AlertDialog(
           title: Text('Deseja mesmo reagendar?'),
           content: Text('O agendamento anterior será cancelado.'),
@@ -63,7 +93,7 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
             ),
             TextButton(
               onPressed: () {
-                agendar();
+                reagendar();
                 Navigator.pop(context);
               },
               child: Text('SIM'),
@@ -78,32 +108,22 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
 
   void onDiaChanged(String? value) {
     setState(() {
-      diaSelecionado = value;
-    });
-  }
-
-  void onHorarioChanged(String? value) {
-    setState(() {
-      horarioSelecionado = value;
+      dataSelecionada = value;
     });
   }
 
   List<DropdownMenuItem<String>> listaDias() {
-    return widget.posto.diasDisponiveis.map((String dia) {
-      return DropdownMenuItem(
-        value: dia,
-        child: Text(dia),
-      );
-    }).toList();
-  }
-
-  List<DropdownMenuItem<String>> listaHorarios() {
-    return widget.posto.horariosAgendamento!.map((String horario) {
-      return DropdownMenuItem(
-        value: horario,
-        child: Text(horario),
-      );
-    }).toList();
+    List<DropdownMenuItem<String>> dias = [];
+    widget.posto.diasDisponiveis.forEach( (key, value) {
+        if(value > 0) {
+          dias.add(DropdownMenuItem<String>(
+            value: key,
+            child: Text(key),
+          ));
+        }
+      }
+    );
+    return dias;
   }
 
   @override
@@ -113,22 +133,15 @@ class _AgendamentoPagePt2State extends State<AgendamentoPagePt2> {
       titulo: 'Parte 2 de 2',
       children: [
         Texto(
-          texto: 'Agora escolha o dia e um dos horários disponíveis ' +
-            'para a vacinação',
+          texto: 'Agora escolha a data para a vacinação',
           marginBottom: 24,
         ),
         CampoDropDown(
-          hint: 'Dia',
-          value: diaSelecionado,
+          hint: 'Data',
+          value: dataSelecionada,
           onChanged: onDiaChanged,
           list: listaDias(),
           marginBottom: 24,
-        ),
-        CampoDropDown(
-          hint: 'Horário',
-          value: horarioSelecionado,
-          onChanged: onHorarioChanged,
-          list: listaHorarios()
         ),
         Botao(
           titulo: 'Confirmar',

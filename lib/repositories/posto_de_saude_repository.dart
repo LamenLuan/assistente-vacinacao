@@ -1,35 +1,51 @@
+import 'package:assistente_vacinacao/database/db_firestore.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
-class PostoDeSaudeRepository {
-  static List<PostoDeSaude> postos = [
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Luiz Conrado Mansani',
-      endereco: 'Av. General Carlos Cavalcanti - Uvaranas, ' +
-          'Ponta Grossa - PR, 84030-000',
-      diasDisponiveis: ['27/08/2021', '29/08/2021', '30/08/2021'],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Silas Sallen',
-      endereco: 'Rua Rodrigo Silva - Uvaranas - ' +
-          ' Vila Claudionora, Ponta Grossa - PR, 84030-040',
-      diasDisponiveis: ['30/08/2021', '01/09/2021', '02/09/2021'],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Antonio Saliba',
-      endereco: 'R. Siqueira Campos, 753 - Parque Sabiá, ' +
-          'Ponta Grossa - PR, 84031-030',
-      diasDisponiveis: ['28/08/2021', '29/08/2021', '30/08/2021'],
-    ),
-    PostoDeSaude(
-      nome: 'Unidade de Saúde Madre Josefa',
-      endereco: 'R. Bituruna - Coronel Cláudio, Ponta Grossa - PR, 84025-490',
-      diasDisponiveis: ['25/08/2021', '27/08/2021', '30/08/2021'],
-    )
-  ];
+class PostoDeSaudeRepository extends ChangeNotifier {
+  static List<PostoDeSaude> postos = [];
+  late FirebaseFirestore db;
+
+  _startFirestore() {
+    db = DBFirestore.get();
+  }
+
+  _readPostos() async {
+    final snapshot = await db.collection('postos').get();
+    snapshot.docs.forEach((doc) {
+      postos.add(
+        PostoDeSaude(
+          diasDisponiveis: doc.get('diasDisponiveis'),
+          endereco: doc.get('endereco'),
+          nome: doc.get('nome'),
+        )
+      );
+    });
+    notifyListeners();
+  }
+
+  _starRepository() async {
+    await _startFirestore();
+    await _readPostos();
+  }
+
+  PostoDeSaudeRepository() {
+    _starRepository();
+  }
 
   static PostoDeSaude? findPosto(String nome) {
     for (var posto in postos) {
       if (posto.nome == nome) return posto;
     }
+  }
+
+  devolveDose(String posto, String data) async {
+    PostoDeSaude p = findPosto(posto)!;
+    p.diasDisponiveis.update(data, (value) => ++value);
+    await db.collection('postos').doc(posto).update({
+      'diasDisponiveis': p.diasDisponiveis
+    });
+    notifyListeners();
   }
 }

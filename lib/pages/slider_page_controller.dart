@@ -1,15 +1,10 @@
-import 'package:assistente_vacinacao/models/cidadao.dart';
 import 'package:assistente_vacinacao/pages/principal_page.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_page.dart';
 
 class SliderPage extends StatefulWidget {
-  final Cidadao cidadao;
-  SliderPage({
-    Key? key,
-    required this.cidadao
-  }) : super(key: key);
+  SliderPage({Key? key}) : super(key: key);
 
   @override
   _SliderPageState createState() => _SliderPageState();
@@ -37,7 +32,7 @@ class _SliderPageState extends State<SliderPage> {
       body: PageView(
         controller: pc,
         children: [
-          PrincipalPage(cidadao: widget.cidadao),
+          PrincipalPage(),
           ChatPage(),
         ],
         onPageChanged: setPaginaAtual,
@@ -62,6 +57,7 @@ class _SliderPageState extends State<SliderPage> {
           );
         },
         backgroundColor: Colors.grey[200],
+        selectedItemColor: Colors.teal[400]
       ),
     );
   }

@@ -2,8 +2,8 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_entrada.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
-import 'package:assistente_vacinacao/repositories/cidadao_repository.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
+import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -18,12 +18,11 @@ class CadastroPessoa1Page extends StatefulWidget {
 }
 
 class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
-  final Cidadao cidadao = Cidadao(
+  final Usuario cidadao = Usuario(
     cpf: '',
-    senha: '',
     nome: '',
     dataNascimento: DateTime(2000),
-    isMasculino: true,
+    masculino: true,
     comorbidade: false,
     telefone: ''
   );
@@ -54,7 +53,7 @@ class _CadastroPessoa1PageState extends State<CadastroPessoa1Page> {
   String? cpfValidator(String? value) {
     if(value!.isEmpty) return 'Informe o CPF';
     if( !_cpfFormatter.isFill() ) return 'CPF incompleto';
-    if(CidadaoRepository.findCidadao(_cpfController.text) != null)
+    if(UsuariosRepository.findCidadaoCPF(_cpfController.text) != null)
       return 'CPF já cadastrado';
   }
 

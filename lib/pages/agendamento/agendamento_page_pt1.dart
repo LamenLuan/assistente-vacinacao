@@ -2,16 +2,17 @@ import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/campo_drop_down.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:assistente_vacinacao/models/posto_de_saude.dart';
 import 'package:assistente_vacinacao/pages/agendamento/agendamento_page_pt2.dart';
 import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AgendamentoPagePt1 extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario usuario;
 
-  AgendamentoPagePt1({Key? key, required this.cidadao}) : super(key: key);
+  AgendamentoPagePt1({Key? key, required this.usuario}) : super(key: key);
 
   @override
   _AgendamentoPagePt1State createState() => _AgendamentoPagePt1State();
@@ -29,7 +30,7 @@ class _AgendamentoPagePt1State extends State<AgendamentoPagePt1> {
         context,
         MaterialPageRoute(
           builder: (_) => AgendamentoPagePt2(
-            cidadao: widget.cidadao,
+            usuario: widget.usuario,
             posto: posto!,
           )
         )
@@ -54,6 +55,8 @@ class _AgendamentoPagePt1State extends State<AgendamentoPagePt1> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<PostoDeSaudeRepository>(context);
+
     return PaginaFormulario(
       formKey: _formKey,
       titulo: 'Parte 1 de 2',

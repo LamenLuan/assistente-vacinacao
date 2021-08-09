@@ -1,15 +1,13 @@
-import 'package:assistente_vacinacao/models/posto_de_saude.dart';
-
 class Agendamento {
-  String dia;
-  String horario;
+  String data;
   int dose;
-  PostoDeSaude posto;
+  String nomePosto;
+  String endereco;
 
   Agendamento({
-    required this.dia,
-    required this.horario,
+    required this.data,
     required this.dose,
-    required this.posto
+    required this.nomePosto,
+    required this.endereco
   });
 }

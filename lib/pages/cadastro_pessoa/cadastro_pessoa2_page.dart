@@ -1,14 +1,14 @@
 import 'package:assistente_vacinacao/components/botao.dart';
 import 'package:assistente_vacinacao/components/pagina_formulario.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
-import 'package:assistente_vacinacao/models/cidadao.dart';
+import 'package:assistente_vacinacao/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'cadastro_pessoa3_page.dart';
 
 class CadastroPessoa2Page extends StatefulWidget {
-  final Cidadao cidadao;
+  final Usuario cidadao;
   
   CadastroPessoa2Page({Key? key, required this.cidadao}) : super(key: key);
 
@@ -17,7 +17,7 @@ class CadastroPessoa2Page extends StatefulWidget {
 }
 
 class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
-  bool isMasculino = true, comorbidade = false;
+  bool masculino = true, comorbidade = false;
   DateTime? dataNascimento;
 
   final _dataController = TextEditingController();
@@ -25,13 +25,13 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
 
   void prosseguir() {
     if( _formKey.currentState!.validate() ) {
-      Cidadao cidadao = widget.cidadao;
+      Usuario cidadao = widget.cidadao;
       cidadao.dataNascimento = dataNascimento!;
-      cidadao.isMasculino = isMasculino;
+      cidadao.masculino = masculino;
       cidadao.comorbidade = comorbidade;
 
       Navigator.push(context, MaterialPageRoute(
-        builder: (_) => CadastroPessoa3Page(cidadao: widget.cidadao)
+        builder: (_) => CadastroPessoa3Page(usuario: widget.cidadao)
       ));
     }
   }
@@ -61,7 +61,7 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
   void onGeneroChanged(bool? valor)
   {
     setState(() {
-      isMasculino = valor!;
+      masculino = valor!;
     });
   }
 
@@ -111,13 +111,13 @@ class _CadastroPessoa2PageState extends State<CadastroPessoa2Page> {
           children: [
             Radio(
               value: true,
-              groupValue: isMasculino,
+              groupValue: masculino,
               onChanged: onGeneroChanged,
             ),
             Text( 'Masculino', style: TextStyle(fontSize: 20) ),
             Radio(
               value: false,
-              groupValue: isMasculino,
+              groupValue: masculino,
               onChanged: onGeneroChanged
             ),
             Text( 'Feminino', style: TextStyle(fontSize: 20) ),
