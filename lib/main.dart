@@ -2,6 +2,8 @@ import 'package:assistente_vacinacao/components/autenticador.dart';
 import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,6 +12,8 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
   runApp(
     MultiProvider(
       providers: [
