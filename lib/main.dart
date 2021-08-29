@@ -4,12 +4,15 @@ import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FlutterConfig.loadEnvVariables();
+  
   runApp(
     MultiProvider(
       providers: [

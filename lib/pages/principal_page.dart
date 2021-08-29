@@ -2,6 +2,7 @@ import 'package:assistente_vacinacao/components/botao_com_icone.dart';
 import 'package:assistente_vacinacao/components/texto.dart';
 import 'package:assistente_vacinacao/models/agendamento.dart';
 import 'package:assistente_vacinacao/models/usuario.dart';
+import 'package:assistente_vacinacao/pages/rotas_page.dart';
 import 'package:assistente_vacinacao/repositories/posto_de_saude_repository.dart';
 import 'package:assistente_vacinacao/repositories/usuarios_repository.dart';
 import 'package:assistente_vacinacao/services/auth_service.dart';
@@ -133,8 +134,14 @@ class _PrincipalPageState extends State<PrincipalPage> {
                 padding: EdgeInsets.all(16),
               ),
               BotaoIcone(
-                titulo: 'Rotas',
-                onPressed: () {},
+                titulo: 'Mapa',
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => RotasPage(
+                      agendamento: usuario!.agendamento
+                    )
+                  ));
+                },
                 icone: Icons.map_rounded,
               ),
             ] : [],

@@ -19,6 +19,8 @@ class PostoDeSaudeRepository extends ChangeNotifier {
           diasDisponiveis: doc.get('diasDisponiveis'),
           endereco: doc.get('endereco'),
           nome: doc.get('nome'),
+          latitude: doc.get('latitude'),
+          longitude: doc.get('longitude')
         )
       );
     });
